@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-deck="01-01-what-is-statistics">
+<html lang="en" data-deck="01-02-types-of-data">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Math 11 §1.1 — What is Statistics?</title>
+<title>Math 11 §1.2 — Types of Data</title>
 <!-- Inline favicon: a browser asks for /favicon.ico by default and would
      404 on the deploy host and off disk. Data URI, not a file, so the
      page still makes zero external requests. Mark reuses the presenter
@@ -12,7 +12,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20180%20180%27%3E%3Crect%20width%3D%27180%27%20height%3D%27180%27%20fill%3D%27%231a5fb4%27%2F%3E%3Crect%20x%3D%2720%27%20y%3D%2748%27%20width%3D%27140%27%20height%3D%2784%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%2732%27%20y%3D%2760%27%20width%3D%27116%27%20height%3D%2720%27%20fill%3D%27%231a5fb4%27%2F%3E%3C%2Fsvg%3E">
 <meta name="deck-course" content="math-11">
 <meta name="deck-chapter" content="1">
-<meta name="deck-section" content="1.1">
+<meta name="deck-section" content="1.2">
 <meta name="deck-date" content="2026-08-17">
 <style>
 /* 1) THEME BLOCK — themes/neutral.css */
@@ -126,7 +126,7 @@
   --callout-youtry-fill:#fff9e0; --callout-youtry-edge:#c47c00; --callout-youtry-ink:#8f3c00;
   --callout-warning-fill:#fff0f0; --callout-warning-edge:#a91d11; --callout-warning-ink:#a91d11;
 }
-/* 2) BASE BLOCK — templates/deck-base.css */
+/* 2) BASE BLOCK  — templates/deck-base.css */
 /* === accessible-slides deck-base.css ===
    Layout + behavior CSS shared by every deck. Colors, fonts, and sizes come
    from theme custom properties (see themes/). Two modes:
@@ -711,6 +711,79 @@ mjx-container[display="true"] {
   .slide { box-shadow: none; }
 }
 /* 3) DECK BLOCK  — deck-specific layout tweaks only; no new colors      */
+/* --- Data-classification tree (summary slide) -----------------------------
+   The hierarchy is a nested <ul>, so assistive tech gets the structure for
+   free. Narrow viewports get a plain indented list — real reflow, no
+   horizontal scroll; from 46rem up the same markup draws as a tree.
+
+   Every rule is written as `.slide .tree.tree ...`. The doubled class is
+   deliberate: deck-base gives EVERY .slide ul/ol/li its own prose margins
+   and indent, and the presentation-mode versions of those rules outrank a
+   plain `.tree ul`. Left unbeaten they push the diagram off-center and open
+   gaps between each box and the line dropping from it.
+
+   Colors come only from theme custom properties, using pairs already vetted
+   in themes/CONTRAST.md: --text-primary and --accent on --accent-soft,
+   --accent on --bg-slide. */
+.slide .tree.tree ul { list-style: none; margin: 0; padding: 0; }
+.slide .tree.tree li { margin: 0.5em 0; }
+.slide .tree.tree ul ul {
+  margin-top: 0.5em; padding-left: 1em;
+  border-left: 0.06em solid var(--accent);
+}
+.slide .tree.tree .node {
+  display: inline-block; padding: 0.2em 0.6em;
+  border: 0.06em solid var(--accent); border-radius: 6px;
+  background: var(--accent-soft); color: var(--text-primary);
+  font-weight: 700; line-height: 1.15; vertical-align: top;
+}
+.slide .tree.tree .node .edge { display: block; font-weight: 400; font-size: 0.75em; }
+
+@media (min-width: 46rem) {
+  /* flex-grow lets the diagram take the slide's spare height and center
+     itself in it, rather than hugging the heading with dead space below */
+  .slide .tree.tree {
+    display: flex; justify-content: center; align-items: center;
+    flex-grow: 1; margin: 0;
+  }
+  /* equal-width sibling tracks. Each child then draws its own half of the
+     horizontal bar ending EXACTLY under the parent's drop line, so revealing
+     children one at a time never breaks the bar. Grid, not flex: equal 1fr
+     tracks size the row to 2x the widest child, so no label wraps to get
+     there — flex-basis 0 would have clamped each child to its own
+     min-content and left the halves misaligned. */
+  .slide .tree.tree ul {
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+    justify-content: center; margin: 0; padding: 0;
+  }
+  /* line-height 0 on the items removes the inline-block descender space that
+     would otherwise sit between a node box and its connector */
+  .slide .tree.tree li {
+    position: relative; margin: 0; padding: 0.75em 0.5em 0;
+    text-align: center; line-height: 0; box-sizing: border-box;
+  }
+  .slide .tree.tree > ul > li { padding-top: 0; }
+  .slide .tree.tree ul ul { margin-top: 0; padding-left: 0; border-left: 0 none; }
+  .slide .tree.tree li::before, .slide .tree.tree li::after {
+    content: ""; position: absolute; top: 0; right: 50%;
+    width: 50%; height: 0.75em; border-top: 0.055em solid var(--accent);
+  }
+  .slide .tree.tree li::after { right: auto; left: 50%; border-left: 0.055em solid var(--accent); }
+  .slide .tree.tree li:only-child { padding-top: 0; }
+  .slide .tree.tree li:only-child::before, .slide .tree.tree li:only-child::after { display: none; }
+  .slide .tree.tree li:first-child::before, .slide .tree.tree li:last-child::after { border: 0 none; }
+  .slide .tree.tree li:last-child::before { border-right: 0.055em solid var(--accent); }
+  .slide .tree.tree ul ul { position: relative; padding-top: 0.75em; }
+  .slide .tree.tree > ul > li { padding-top: 0; }
+  .slide .tree.tree ul ul::before {
+    content: ""; position: absolute; top: 0; left: 50%;
+    width: 0; height: 0.75em; border-left: 0.055em solid var(--accent);
+  }
+}
+
+/* A parent's drop line stays hidden until at least one child beneath it has
+   been revealed, so no line ever hangs into empty space mid-reveal. */
+body.mode-present .slide .tree.tree ul:not(:has(> li.revealed))::before { visibility: hidden; }
 </style>
 <style id="MJX-SVG-styles">
 mjx-container[jax="SVG"] {
@@ -853,14 +926,27 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
 </style></head>
 <body>
 <!-- sources:
-  courses/math-11/notes/SOURCE/01-01.ptx
+  courses/math-11/notes/SOURCE/01-02.ptx
   courses/math-11/notes/planning/01-01-and-01-02-planning.md
+  courses/math-11/learning-targets/lt-01-types-of-data/lt-01-header.ptx
+  concepts/statistics/data.md
+  concepts/statistics/population.md
+  concepts/statistics/census.md
+  concepts/statistics/sample.md
+  concepts/statistics/sampling.md
+  concepts/statistics/variable.md
+  concepts/statistics/statistic.md
+  concepts/statistics/parameter.md
+  concepts/statistics/quantitative-data.md
+  concepts/statistics/qualitative-data.md
+  concepts/statistics/discrete-data.md
+  concepts/statistics/continuous-data.md
 -->
 <div class="deck-toolbar">
   <button id="btn-mode" aria-pressed="false">Present (P)</button>
   <button id="btn-toc">Contents</button>
   <button id="btn-themeflip" aria-pressed="false">Dark mode</button>
-  <a id="btn-pdf" class="btn-link" href="01-01-what-is-statistics.pdf" download>Download PDF<span class="sr-only"> handout of these slides. The web version you are reading is the accessible one.</span></a>
+  <a id="btn-pdf" class="btn-link" href="01-02-types-of-data.pdf" download="">Download PDF<span class="sr-only"> handout of these slides. The web version you are reading is the accessible one.</span></a>
   <span id="slide-counter" aria-live="polite"></span>
 </div>
 <dialog id="toc-dialog" aria-label="Table of contents">
@@ -874,182 +960,323 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
        slides stay in place in the DOM --></div>
   <section class="slide slide-title" id="s1" aria-labelledby="s1-h" data-slide-id="title">
     <p class="slide-kicker">Math 11 — Elementary Statistics</p>
-    <p class="slide-section-mark">§1.1</p>
-    <h1 id="s1-h">What is Statistics?</h1>
-    <p class="slide-subtitle">The science of data, and the two things we do with it</p>
+    <p class="slide-section-mark">§1.2</p>
+    <h1 id="s1-h">Types of Data</h1>
+    <p class="slide-subtitle">Who we study, what we measure, and what kind of thing we get back</p>
   </section>
   <section class="slide" id="s2" aria-labelledby="s2-h" data-slide-id="todays-goal">
     <div class="slide-band">
-      <p class="slide-kicker">§1.1 Objectives</p>
+      <p class="slide-kicker">§1.2 Objectives</p>
       <p class="slide-course">MATH 11</p>
     </div>
     <h2 id="s2-h">Today’s Goal</h2>
     <p>After completing this section, you should be able to:</p>
     <ul>
-      <li>Explain what statistics is and why it is important</li>
-      <li>Distinguish between descriptive and inferential statistics</li>
-      <li>Identify real-world applications of statistical methods</li>
+      <li>Define and distinguish between populations and samples</li>
+      <li>Distinguish between parameters and statistics</li>
+      <li>Classify data as qualitative or quantitative</li>
+      <li>Classify quantitative data as discrete or continuous</li>
     </ul>
   </section>
-  <section class="slide slide-question" id="s3" aria-labelledby="s3-h" data-slide-id="would-you-believe-it">
+  <section class="slide" id="s3" aria-labelledby="s3-h" data-slide-id="learning-target-1">
     <div class="slide-band">
-      <p class="slide-kicker">§1.1 Think About It</p>
+      <p class="slide-kicker">§1.2 Learning Target</p>
       <p class="slide-course">MATH 11</p>
     </div>
-    <h2 id="s3-h">Would You Believe It?</h2>
-    <p class="prompt">A headline says a new drug is 95% effective. What would you want to know before you believed it?</p>
-    <p data-reveal="">Who was studied, how many of them, how the number was worked out, and whether it holds for people who were never in the study. Statistics is the field that answers those questions.</p>
+    <h2 id="s3-h">What You Will Be Graded On</h2>
+    <div class="callout callout-lt">
+      <span class="callout-label">LT.1 Types of Data</span>
+      <p>I understand the differences between various types of data (e.g., qualitative, quantitative, discrete, continuous, etc.). I can use this understanding to identify what type of data a given data set is.</p>
+    </div>
   </section>
-  <section class="slide" id="s4" aria-labelledby="s4-h" data-slide-id="the-science-of-data">
+  <section class="slide slide-question" id="s4" aria-labelledby="s4-h" data-slide-id="who-are-we-talking-about">
     <div class="slide-band">
-      <p class="slide-kicker">§1.1 The Science of Data</p>
+      <p class="slide-kicker">§1.2 Think About It</p>
       <p class="slide-course">MATH 11</p>
     </div>
-    <h2 id="s4-h">The Science of Data</h2>
-    <p>At its core, <strong>statistics</strong> is the science of collecting, organizing, analyzing, and interpreting data to make informed decisions.</p>
-    <ul>
-      <li data-reveal=""><strong>Make better decisions.</strong> Weigh evidence and risk — a treatment, an investment, a claim in the news.</li>
-      <li data-reveal=""><strong>Understand research.</strong> Medicine, psychology, and economics all report their conclusions statistically.</li>
-      <li data-reveal=""><strong>Detect misleading information.</strong> Statistics can be misused to deceive. Knowing how it works is how you catch that.</li>
-    </ul>
+    <h2 id="s4-h">Who Are We Talking About?</h2>
+    <p class="prompt">A report says 3 in 10 Fresno State students work full time. It was written after asking 200 students. Which group is the report about?</p>
+    <p data-reveal="">All of them — but only 200 were measured. Each group gets its own name.</p>
   </section>
-  <section class="slide" id="s5" aria-labelledby="s5-h" data-example="1" data-slide-id="statistics-at-work">
+  <section class="slide" id="s5" aria-labelledby="s5-h" data-slide-id="data">
     <div class="slide-band">
-      <p class="slide-kicker">§1.1 Example 1</p>
+      <p class="slide-kicker">§1.2 Data</p>
       <p class="slide-course">MATH 11</p>
     </div>
-    <h2 id="s5-h">Statistics at Work</h2>
-    <ul>
-      <li data-reveal=""><strong>Medical research.</strong> A hospital network tries a new asthma inhaler with 12,000 patients; emergency visits drop 38%.</li>
-      <li data-reveal=""><strong>Quality control.</strong> A bottling plant checks 300 bottles, finds 4 underfilled, and estimates the rate for the whole run.</li>
-      <li data-reveal=""><strong>Sports analytics.</strong> A basketball team models which shots to take and which players to pair on the floor.</li>
-      <li data-reveal=""><strong>Public policy.</strong> A city uses census and survey data to decide where to add bus routes.</li>
-    </ul>
-  </section>
-  <section class="slide slide-question" id="s6" aria-labelledby="s6-h" data-slide-id="two-branches">
-    <div class="slide-band">
-      <p class="slide-kicker">§1.1 Think About It</p>
-      <p class="slide-course">MATH 11</p>
-    </div>
-    <h2 id="s6-h">Same Data, Two Claims</h2>
-    <p class="prompt">Which claim goes beyond the 240 students we counted?</p>
-    <div class="cols-2">
-      <div>
-        <p><strong>Claim A.</strong> Of the 240 students in our survey, 150 have declared a major.</p>
-      </div>
-      <div>
-        <p><strong>Claim B.</strong> Based on those 240 students, about 6 in 10 Fresno State students have declared a major.</p>
-      </div>
-    </div>
-    <p data-reveal=""><strong>Claim B.</strong> It describes students nobody looked at. That leap is the difference between the two branches of statistics.</p>
-  </section>
-  <section class="slide" id="s7" aria-labelledby="s7-h" data-slide-id="descriptive-statistics">
-    <div class="slide-band">
-      <p class="slide-kicker">§1.1 Descriptive Statistics</p>
-      <p class="slide-course">MATH 11</p>
-    </div>
-    <h2 id="s7-h">Staying Inside the Data</h2>
+    <h2 id="s5-h">Observations and Their Values</h2>
     <div class="callout callout-definition">
-      <span class="callout-label">Definition 1.1.2</span>
-      <p><strong>Descriptive statistics</strong> refers to the methods used for collecting, organizing, summarizing, and presenting data.</p>
+      <span class="callout-label">Definition 1.2.1</span>
+      <p><strong>Data</strong> are collections of observations. More precisely, data refers to the values associated with these observations. <em>Data</em> is plural; <em>datum</em> is singular.</p>
     </div>
-    <p data-reveal="">Tables, graphs, averages, percentages — anything that describes the group in front of you and stops there.</p>
-    <p data-reveal="">Descriptive statistics is the focus of <strong>Chapters 1–3</strong>.</p>
+    <p data-reveal="">So “the data <em>are</em>,” not “the data is.”</p>
   </section>
-  <section class="slide" id="s8" aria-labelledby="s8-h" data-example="2" data-slide-id="describing-what-we-measured">
+  <section class="slide" id="s6" aria-labelledby="s6-h" data-slide-id="population">
     <div class="slide-band">
-      <p class="slide-kicker">§1.1 Example 2</p>
+      <p class="slide-kicker">§1.2 Populations</p>
       <p class="slide-course">MATH 11</p>
     </div>
-    <h2 id="s8-h">Describing What We Measured</h2>
-    <p>A university reports that the average GPA of its graduating class is <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="4.023ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 1778 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-1-TEX-N-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"></path><path id="MJX-1-TEX-N-2E" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60Z"></path><path id="MJX-1-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path><path id="MJX-1-TEX-N-36" d="M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="33" xlink:href="#MJX-1-TEX-N-33"></use><use data-c="2E" xlink:href="#MJX-1-TEX-N-2E" transform="translate(500,0)"></use><use data-c="30" xlink:href="#MJX-1-TEX-N-30" transform="translate(778,0)"></use><use data-c="36" xlink:href="#MJX-1-TEX-N-36" transform="translate(1278,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>3.06</mn></math></mjx-assistive-mml></mjx-container>, with <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.127ex;" xmlns="http://www.w3.org/2000/svg" width="4.147ex" height="1.824ex" role="img" focusable="false" viewBox="0 -750 1833 806" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-2-TEX-N-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"></path><path id="MJX-2-TEX-N-38" d="M70 417T70 494T124 618T248 666Q319 666 374 624T429 515Q429 485 418 459T392 417T361 389T335 371T324 363L338 354Q352 344 366 334T382 323Q457 264 457 174Q457 95 399 37T249 -22Q159 -22 101 29T43 155Q43 263 172 335L154 348Q133 361 127 368Q70 417 70 494ZM286 386L292 390Q298 394 301 396T311 403T323 413T334 425T345 438T355 454T364 471T369 491T371 513Q371 556 342 586T275 624Q268 625 242 625Q201 625 165 599T128 534Q128 511 141 492T167 463T217 431Q224 426 228 424L286 386ZM250 21Q308 21 350 55T392 137Q392 154 387 169T375 194T353 216T330 234T301 253T274 270Q260 279 244 289T218 306L210 311Q204 311 181 294T133 239T107 157Q107 98 150 60T250 21Z"></path><path id="MJX-2-TEX-N-25" d="M465 605Q428 605 394 614T340 632T319 641Q332 608 332 548Q332 458 293 403T202 347Q145 347 101 402T56 548Q56 637 101 693T202 750Q241 750 272 719Q359 642 464 642Q580 642 650 732Q662 748 668 749Q670 750 673 750Q682 750 688 743T693 726Q178 -47 170 -52Q166 -56 160 -56Q147 -56 142 -45Q137 -36 142 -27Q143 -24 363 304Q469 462 525 546T581 630Q528 605 465 605ZM207 385Q235 385 263 427T292 548Q292 617 267 664T200 712Q193 712 186 709T167 698T147 668T134 615Q132 595 132 548V527Q132 436 165 403Q183 385 203 385H207ZM500 146Q500 234 544 290T647 347Q699 347 737 292T776 146T737 0T646 -56Q590 -56 545 0T500 146ZM651 -18Q679 -18 707 24T736 146Q736 215 711 262T644 309Q637 309 630 306T611 295T591 265T578 212Q577 200 577 146V124Q577 -18 647 -18H651Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="33" xlink:href="#MJX-2-TEX-N-33"></use><use data-c="38" xlink:href="#MJX-2-TEX-N-38" transform="translate(500,0)"></use></g><g data-mml-node="mi" transform="translate(1000,0)"><use data-c="25" xlink:href="#MJX-2-TEX-N-25"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>38</mn><mi mathvariant="normal">%</mi></math></mjx-assistive-mml></mjx-container> of graduates earning honors.</p>
-    <p data-reveal="">These are descriptive statistics. They summarize the data for this particular group of graduates.</p>
-    <p data-reveal="">Notice what is <em>not</em> claimed: nothing about next year’s class, and nothing about any other university.</p>
-  </section>
-  <section class="slide" id="s9" aria-labelledby="s9-h" data-slide-id="inferential-statistics">
-    <div class="slide-band">
-      <p class="slide-kicker">§1.1 Inferential Statistics</p>
-      <p class="slide-course">MATH 11</p>
-    </div>
-    <h2 id="s9-h">Reaching Past the Data</h2>
+    <h2 id="s6-h">The Whole Group</h2>
     <div class="callout callout-definition">
-      <span class="callout-label">Definition 1.1.4</span>
-      <p><strong>Inferential statistics</strong> refers to the methods used for drawing conclusions about a population based on data from a sample, using probability to assess how confident we can be in those conclusions.</p>
+      <span class="callout-label">Definition 1.2.2</span>
+      <p>A <strong>population</strong> is the complete collection of all subjects being considered in a statistical study.</p>
     </div>
-    <p data-reveal="">We do this because we almost never get to measure everyone. A sample is what we can afford.</p>
-    <p data-reveal="">Inferential statistics is the focus of <strong>Chapters 4–12</strong>.</p>
+    <p data-reveal="">It is also the group your conclusions are meant to apply to.</p>
+    <p data-reveal="">A population need not be people. It can be batteries, fish, or storms.</p>
   </section>
-  <section class="slide" id="s10" aria-labelledby="s10-h" data-example="3" data-slide-id="reaching-beyond-the-sample">
+  <section class="slide" id="s7" aria-labelledby="s7-h" data-slide-id="census-and-sample">
     <div class="slide-band">
-      <p class="slide-kicker">§1.1 Example 3</p>
+      <p class="slide-kicker">§1.2 Census and Sample</p>
       <p class="slide-course">MATH 11</p>
     </div>
-    <h2 id="s10-h">Reaching Beyond the Sample</h2>
-    <p>A polling organization surveys 1,200 likely voters and finds that 54% support Candidate B.</p>
-    <p data-reveal="">They conclude that Candidate B leads among <em>all</em> likely voters, with a margin of error of <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.127ex;" xmlns="http://www.w3.org/2000/svg" width="4.776ex" height="1.824ex" role="img" focusable="false" viewBox="0 -750 2111 806" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-3-TEX-N-B1" d="M56 320T56 333T70 353H369V502Q369 651 371 655Q376 666 388 666Q402 666 405 654T409 596V500V353H707Q722 345 722 333Q722 320 707 313H409V40H707Q722 32 722 20T707 0H70Q56 7 56 20T70 40H369V313H70Q56 320 56 333Z"></path><path id="MJX-3-TEX-N-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"></path><path id="MJX-3-TEX-N-25" d="M465 605Q428 605 394 614T340 632T319 641Q332 608 332 548Q332 458 293 403T202 347Q145 347 101 402T56 548Q56 637 101 693T202 750Q241 750 272 719Q359 642 464 642Q580 642 650 732Q662 748 668 749Q670 750 673 750Q682 750 688 743T693 726Q178 -47 170 -52Q166 -56 160 -56Q147 -56 142 -45Q137 -36 142 -27Q143 -24 363 304Q469 462 525 546T581 630Q528 605 465 605ZM207 385Q235 385 263 427T292 548Q292 617 267 664T200 712Q193 712 186 709T167 698T147 668T134 615Q132 595 132 548V527Q132 436 165 403Q183 385 203 385H207ZM500 146Q500 234 544 290T647 347Q699 347 737 292T776 146T737 0T646 -56Q590 -56 545 0T500 146ZM651 -18Q679 -18 707 24T736 146Q736 215 711 262T644 309Q637 309 630 306T611 295T591 265T578 212Q577 200 577 146V124Q577 -18 647 -18H651Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="B1" xlink:href="#MJX-3-TEX-N-B1"></use></g><g data-mml-node="mn" transform="translate(778,0)"><use data-c="33" xlink:href="#MJX-3-TEX-N-33"></use></g><g data-mml-node="mi" transform="translate(1278,0)"><use data-c="25" xlink:href="#MJX-3-TEX-N-25"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>±</mo><mn>3</mn><mi mathvariant="normal">%</mi></math></mjx-assistive-mml></mjx-container>.</p>
-    <p data-reveal="">That claim covers millions of people the pollsters never spoke to. The margin of error is how they admit the uncertainty: somewhere between <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.127ex;" xmlns="http://www.w3.org/2000/svg" width="4.147ex" height="1.824ex" role="img" focusable="false" viewBox="0 -750 1833 806" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-4-TEX-N-35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"></path><path id="MJX-4-TEX-N-31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path><path id="MJX-4-TEX-N-25" d="M465 605Q428 605 394 614T340 632T319 641Q332 608 332 548Q332 458 293 403T202 347Q145 347 101 402T56 548Q56 637 101 693T202 750Q241 750 272 719Q359 642 464 642Q580 642 650 732Q662 748 668 749Q670 750 673 750Q682 750 688 743T693 726Q178 -47 170 -52Q166 -56 160 -56Q147 -56 142 -45Q137 -36 142 -27Q143 -24 363 304Q469 462 525 546T581 630Q528 605 465 605ZM207 385Q235 385 263 427T292 548Q292 617 267 664T200 712Q193 712 186 709T167 698T147 668T134 615Q132 595 132 548V527Q132 436 165 403Q183 385 203 385H207ZM500 146Q500 234 544 290T647 347Q699 347 737 292T776 146T737 0T646 -56Q590 -56 545 0T500 146ZM651 -18Q679 -18 707 24T736 146Q736 215 711 262T644 309Q637 309 630 306T611 295T591 265T578 212Q577 200 577 146V124Q577 -18 647 -18H651Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="35" xlink:href="#MJX-4-TEX-N-35"></use><use data-c="31" xlink:href="#MJX-4-TEX-N-31" transform="translate(500,0)"></use></g><g data-mml-node="mi" transform="translate(1000,0)"><use data-c="25" xlink:href="#MJX-4-TEX-N-25"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>51</mn><mi mathvariant="normal">%</mi></math></mjx-assistive-mml></mjx-container> and <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.127ex;" xmlns="http://www.w3.org/2000/svg" width="4.147ex" height="1.824ex" role="img" focusable="false" viewBox="0 -750 1833 806" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-5-TEX-N-35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"></path><path id="MJX-5-TEX-N-37" d="M55 458Q56 460 72 567L88 674Q88 676 108 676H128V672Q128 662 143 655T195 646T364 644H485V605L417 512Q408 500 387 472T360 435T339 403T319 367T305 330T292 284T284 230T278 162T275 80Q275 66 275 52T274 28V19Q270 2 255 -10T221 -22Q210 -22 200 -19T179 0T168 40Q168 198 265 368Q285 400 349 489L395 552H302Q128 552 119 546Q113 543 108 522T98 479L95 458V455H55V458Z"></path><path id="MJX-5-TEX-N-25" d="M465 605Q428 605 394 614T340 632T319 641Q332 608 332 548Q332 458 293 403T202 347Q145 347 101 402T56 548Q56 637 101 693T202 750Q241 750 272 719Q359 642 464 642Q580 642 650 732Q662 748 668 749Q670 750 673 750Q682 750 688 743T693 726Q178 -47 170 -52Q166 -56 160 -56Q147 -56 142 -45Q137 -36 142 -27Q143 -24 363 304Q469 462 525 546T581 630Q528 605 465 605ZM207 385Q235 385 263 427T292 548Q292 617 267 664T200 712Q193 712 186 709T167 698T147 668T134 615Q132 595 132 548V527Q132 436 165 403Q183 385 203 385H207ZM500 146Q500 234 544 290T647 347Q699 347 737 292T776 146T737 0T646 -56Q590 -56 545 0T500 146ZM651 -18Q679 -18 707 24T736 146Q736 215 711 262T644 309Q637 309 630 306T611 295T591 265T578 212Q577 200 577 146V124Q577 -18 647 -18H651Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="35" xlink:href="#MJX-5-TEX-N-35"></use><use data-c="37" xlink:href="#MJX-5-TEX-N-37" transform="translate(500,0)"></use></g><g data-mml-node="mi" transform="translate(1000,0)"><use data-c="25" xlink:href="#MJX-5-TEX-N-25"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>57</mn><mi mathvariant="normal">%</mi></math></mjx-assistive-mml></mjx-container> — still a lead either way.</p>
+    <h2 id="s7-h">Everyone, or Only Some?</h2>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.2.3</span>
+      <p>A <strong>census</strong> is the collection of data from every member of the population.</p>
+    </div>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.2.4</span>
+      <p>A <strong>sample</strong> is a subcollection of members selected from a population.</p>
+    </div>
   </section>
-  <section class="slide" id="s11" aria-labelledby="s11-h" data-slide-id="you-try-descriptive-vs-inferential">
+  <section class="slide" id="s8" aria-labelledby="s8-h" data-slide-id="sampling">
     <div class="slide-band">
-      <p class="slide-kicker">§1.1 Practice</p>
+      <p class="slide-kicker">§1.2 Sampling</p>
       <p class="slide-course">MATH 11</p>
     </div>
-    <h2 id="s11-h">Now You Try: Which Branch?</h2>
+    <h2 id="s8-h">How the Sample Gets Chosen</h2>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.2.5</span>
+      <p><strong>Sampling</strong> is a process by which a sample is selected from a population.</p>
+    </div>
+    <p data-reveal="">The sample is the <em>result</em>. Sampling is the <em>action</em>.</p>
+    <p data-reveal="">Specific sampling methods come in §1.4.</p>
+  </section>
+  <section class="slide" id="s9" aria-labelledby="s9-h" data-slide-id="variable">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Variables</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s9-h">The Property You Record</h2>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.2.6</span>
+      <p>In statistics, a <strong>variable</strong> is a characteristic or property that can be determined for each member of the population. It is usually represented by a capital letter such as <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: 0;" xmlns="http://www.w3.org/2000/svg" width="1.928ex" height="1.545ex" role="img" focusable="false" viewBox="0 -683 852 683" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-1-TEX-I-1D44B" d="M42 0H40Q26 0 26 11Q26 15 29 27Q33 41 36 43T55 46Q141 49 190 98Q200 108 306 224T411 342Q302 620 297 625Q288 636 234 637H206Q200 643 200 645T202 664Q206 677 212 683H226Q260 681 347 681Q380 681 408 681T453 682T473 682Q490 682 490 671Q490 670 488 658Q484 643 481 640T465 637Q434 634 411 620L488 426L541 485Q646 598 646 610Q646 628 622 635Q617 635 609 637Q594 637 594 648Q594 650 596 664Q600 677 606 683H618Q619 683 643 683T697 681T738 680Q828 680 837 683H845Q852 676 852 672Q850 647 840 637H824Q790 636 763 628T722 611T698 593L687 584Q687 585 592 480L505 384Q505 383 536 304T601 142T638 56Q648 47 699 46Q734 46 734 37Q734 35 732 23Q728 7 725 4T711 1Q708 1 678 1T589 2Q528 2 496 2T461 1Q444 1 444 10Q444 11 446 25Q448 35 450 39T455 44T464 46T480 47T506 54Q523 62 523 64Q522 64 476 181L429 299Q241 95 236 84Q232 76 232 72Q232 53 261 47Q262 47 267 47T273 46Q276 46 277 46T280 45T283 42T284 35Q284 26 282 19Q279 6 276 4T261 1Q258 1 243 1T201 2T142 2Q64 2 42 0Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D44B" xlink:href="#MJX-1-TEX-I-1D44B"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>X</mi></math></mjx-assistive-mml></mjx-container> or <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: 0;" xmlns="http://www.w3.org/2000/svg" width="1.726ex" height="1.545ex" role="img" focusable="false" viewBox="0 -683 763 683" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-2-TEX-I-1D44C" d="M66 637Q54 637 49 637T39 638T32 641T30 647T33 664T42 682Q44 683 56 683Q104 680 165 680Q288 680 306 683H316Q322 677 322 674T320 656Q316 643 310 637H298Q242 637 242 624Q242 619 292 477T343 333L346 336Q350 340 358 349T379 373T411 410T454 461Q546 568 561 587T577 618Q577 634 545 637Q528 637 528 647Q528 649 530 661Q533 676 535 679T549 683Q551 683 578 682T657 680Q684 680 713 681T746 682Q763 682 763 673Q763 669 760 657T755 643Q753 637 734 637Q662 632 617 587Q608 578 477 424L348 273L322 169Q295 62 295 57Q295 46 363 46Q379 46 384 45T390 35Q390 33 388 23Q384 6 382 4T366 1Q361 1 324 1T232 2Q170 2 138 2T102 1Q84 1 84 9Q84 14 87 24Q88 27 89 30T90 35T91 39T93 42T96 44T101 45T107 45T116 46T129 46Q168 47 180 50T198 63Q201 68 227 171L252 274L129 623Q128 624 127 625T125 627T122 629T118 631T113 633T105 634T96 635T83 636T66 637Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D44C" xlink:href="#MJX-2-TEX-I-1D44C"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>Y</mi></math></mjx-assistive-mml></mjx-container>.</p>
+    </div>
+    <p data-reveal="">A person’s height, a person’s ethnicity, or whether or not a car passes a smog check.</p>
+  </section>
+  <section class="slide slide-question" id="s10" aria-labelledby="s10-h" data-slide-id="which-number-can-we-get">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Think About It</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s10-h">Which Number Can We Get?</h2>
+    <p class="prompt">The average height of all 25,000 students at a university, or the average height of 100 of them. Which can you actually compute?</p>
+    <p data-reveal="">Only the second. The first is what we <em>want</em>; the second is what we can <em>get</em>.</p>
+  </section>
+  <section class="slide" id="s11" aria-labelledby="s11-h" data-slide-id="statistic-and-parameter">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Statistics and Parameters</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s11-h">A Number From Each Group</h2>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.2.7</span>
+      <p>A <strong>statistic</strong> is a numerical property of a sample.</p>
+    </div>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.2.8</span>
+      <p>A <strong>parameter</strong> is a numerical property of a population.</p>
+    </div>
+  </section>
+  <section class="slide" id="s12" aria-labelledby="s12-h" data-example="1" data-slide-id="commute-time-parameter-vs-statistic">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Example 1</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s12-h">Telling the Two Numbers Apart</h2>
+    <p>A company wants to know the average commute time of all of its employees.</p>
+    <p data-reveal=""><strong>Parameter.</strong> The average over every employee. It describes the whole population, and it is <em>estimated</em>.</p>
+    <p data-reveal=""><strong>Statistic.</strong> Measuring everyone is impractical, so we take 60 employees. Their average describes the sample, and it is <em>calculated</em>.</p>
+  </section>
+  <section class="slide" id="s13" aria-labelledby="s13-h" data-example="2" data-slide-id="five-parts-of-a-study">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Example 2</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s13-h">Finding the Parts of a Study</h2>
+    <p>A campus research office surveys <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="5.154ex" height="1.946ex" role="img" focusable="false" viewBox="0 -666 2278 860" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-3-TEX-N-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path id="MJX-3-TEX-N-2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path><path id="MJX-3-TEX-N-36" d="M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z"></path><path id="MJX-3-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="32" xlink:href="#MJX-3-TEX-N-32"></use><use data-c="2C" xlink:href="#MJX-3-TEX-N-2C" transform="translate(500,0)"></use><use data-c="36" xlink:href="#MJX-3-TEX-N-36" transform="translate(778,0)"></use><use data-c="30" xlink:href="#MJX-3-TEX-N-30" transform="translate(1278,0)"></use><use data-c="30" xlink:href="#MJX-3-TEX-N-30" transform="translate(1778,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>2,600</mn></math></mjx-assistive-mml></mjx-container> California community college students. Of those surveyed, <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="5.154ex" height="1.971ex" role="img" focusable="false" viewBox="0 -677 2278 871" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-4-TEX-N-31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path><path id="MJX-4-TEX-N-2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path><path id="MJX-4-TEX-N-34" d="M462 0Q444 3 333 3Q217 3 199 0H190V46H221Q241 46 248 46T265 48T279 53T286 61Q287 63 287 115V165H28V211L179 442Q332 674 334 675Q336 677 355 677H373L379 671V211H471V165H379V114Q379 73 379 66T385 54Q393 47 442 46H471V0H462ZM293 211V545L74 212L183 211H293Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="31" xlink:href="#MJX-4-TEX-N-31"></use><use data-c="2C" xlink:href="#MJX-4-TEX-N-2C" transform="translate(500,0)"></use><use data-c="31" xlink:href="#MJX-4-TEX-N-31" transform="translate(778,0)"></use><use data-c="34" xlink:href="#MJX-4-TEX-N-34" transform="translate(1278,0)"></use><use data-c="34" xlink:href="#MJX-4-TEX-N-34" transform="translate(1778,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>1,144</mn></math></mjx-assistive-mml></mjx-container> report working more than <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 1000 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-5-TEX-N-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path id="MJX-5-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="32" xlink:href="#MJX-5-TEX-N-32"></use><use data-c="30" xlink:href="#MJX-5-TEX-N-30" transform="translate(500,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>20</mn></math></mjx-assistive-mml></mjx-container> hours a week.</p>
+    <p>The office uses this to estimate that <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.127ex;" xmlns="http://www.w3.org/2000/svg" width="4.147ex" height="1.824ex" role="img" focusable="false" viewBox="0 -750 1833 806" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-6-TEX-N-34" d="M462 0Q444 3 333 3Q217 3 199 0H190V46H221Q241 46 248 46T265 48T279 53T286 61Q287 63 287 115V165H28V211L179 442Q332 674 334 675Q336 677 355 677H373L379 671V211H471V165H379V114Q379 73 379 66T385 54Q393 47 442 46H471V0H462ZM293 211V545L74 212L183 211H293Z"></path><path id="MJX-6-TEX-N-25" d="M465 605Q428 605 394 614T340 632T319 641Q332 608 332 548Q332 458 293 403T202 347Q145 347 101 402T56 548Q56 637 101 693T202 750Q241 750 272 719Q359 642 464 642Q580 642 650 732Q662 748 668 749Q670 750 673 750Q682 750 688 743T693 726Q178 -47 170 -52Q166 -56 160 -56Q147 -56 142 -45Q137 -36 142 -27Q143 -24 363 304Q469 462 525 546T581 630Q528 605 465 605ZM207 385Q235 385 263 427T292 548Q292 617 267 664T200 712Q193 712 186 709T167 698T147 668T134 615Q132 595 132 548V527Q132 436 165 403Q183 385 203 385H207ZM500 146Q500 234 544 290T647 347Q699 347 737 292T776 146T737 0T646 -56Q590 -56 545 0T500 146ZM651 -18Q679 -18 707 24T736 146Q736 215 711 262T644 309Q637 309 630 306T611 295T591 265T578 212Q577 200 577 146V124Q577 -18 647 -18H651Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="34" xlink:href="#MJX-6-TEX-N-34"></use><use data-c="34" xlink:href="#MJX-6-TEX-N-34" transform="translate(500,0)"></use></g><g data-mml-node="mi" transform="translate(1000,0)"><use data-c="25" xlink:href="#MJX-6-TEX-N-25"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>44</mn><mi mathvariant="normal">%</mi></math></mjx-assistive-mml></mjx-container> of California community college students work more than <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 1000 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-7-TEX-N-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path id="MJX-7-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="32" xlink:href="#MJX-7-TEX-N-32"></use><use data-c="30" xlink:href="#MJX-7-TEX-N-30" transform="translate(500,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>20</mn></math></mjx-assistive-mml></mjx-container> hours a week.</p>
+    <p data-reveal="">Name the <strong>population</strong>, <strong>sample</strong>, <strong>variable</strong>, <strong>statistic</strong>, and <strong>parameter</strong>.</p>
+  </section>
+  <section class="slide" id="s14" aria-labelledby="s14-h" data-example="2, continued" data-slide-id="five-parts-of-a-study-continued">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Example 2, continued</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s14-h">The Five Parts</h2>
+    <p>Recall: <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="5.154ex" height="1.971ex" role="img" focusable="false" viewBox="0 -677 2278 871" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-8-TEX-N-31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path><path id="MJX-8-TEX-N-2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path><path id="MJX-8-TEX-N-34" d="M462 0Q444 3 333 3Q217 3 199 0H190V46H221Q241 46 248 46T265 48T279 53T286 61Q287 63 287 115V165H28V211L179 442Q332 674 334 675Q336 677 355 677H373L379 671V211H471V165H379V114Q379 73 379 66T385 54Q393 47 442 46H471V0H462ZM293 211V545L74 212L183 211H293Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="31" xlink:href="#MJX-8-TEX-N-31"></use><use data-c="2C" xlink:href="#MJX-8-TEX-N-2C" transform="translate(500,0)"></use><use data-c="31" xlink:href="#MJX-8-TEX-N-31" transform="translate(778,0)"></use><use data-c="34" xlink:href="#MJX-8-TEX-N-34" transform="translate(1278,0)"></use><use data-c="34" xlink:href="#MJX-8-TEX-N-34" transform="translate(1778,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>1,144</mn></math></mjx-assistive-mml></mjx-container> of <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="5.154ex" height="1.946ex" role="img" focusable="false" viewBox="0 -666 2278 860" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-9-TEX-N-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path id="MJX-9-TEX-N-2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path><path id="MJX-9-TEX-N-36" d="M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z"></path><path id="MJX-9-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="32" xlink:href="#MJX-9-TEX-N-32"></use><use data-c="2C" xlink:href="#MJX-9-TEX-N-2C" transform="translate(500,0)"></use><use data-c="36" xlink:href="#MJX-9-TEX-N-36" transform="translate(778,0)"></use><use data-c="30" xlink:href="#MJX-9-TEX-N-30" transform="translate(1278,0)"></use><use data-c="30" xlink:href="#MJX-9-TEX-N-30" transform="translate(1778,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>2,600</mn></math></mjx-assistive-mml></mjx-container> students surveyed work more than <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 1000 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-10-TEX-N-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path id="MJX-10-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="32" xlink:href="#MJX-10-TEX-N-32"></use><use data-c="30" xlink:href="#MJX-10-TEX-N-30" transform="translate(500,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>20</mn></math></mjx-assistive-mml></mjx-container> hours a week.</p>
+    <ul>
+      <li data-reveal=""><strong>Population.</strong> All California community college students.</li>
+      <li data-reveal=""><strong>Sample.</strong> The <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="5.154ex" height="1.946ex" role="img" focusable="false" viewBox="0 -666 2278 860" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-11-TEX-N-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path id="MJX-11-TEX-N-2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path><path id="MJX-11-TEX-N-36" d="M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z"></path><path id="MJX-11-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="32" xlink:href="#MJX-11-TEX-N-32"></use><use data-c="2C" xlink:href="#MJX-11-TEX-N-2C" transform="translate(500,0)"></use><use data-c="36" xlink:href="#MJX-11-TEX-N-36" transform="translate(778,0)"></use><use data-c="30" xlink:href="#MJX-11-TEX-N-30" transform="translate(1278,0)"></use><use data-c="30" xlink:href="#MJX-11-TEX-N-30" transform="translate(1778,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>2,600</mn></math></mjx-assistive-mml></mjx-container> students surveyed. Careful: <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="5.154ex" height="1.946ex" role="img" focusable="false" viewBox="0 -666 2278 860" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-12-TEX-N-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path id="MJX-12-TEX-N-2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path><path id="MJX-12-TEX-N-36" d="M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z"></path><path id="MJX-12-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="32" xlink:href="#MJX-12-TEX-N-32"></use><use data-c="2C" xlink:href="#MJX-12-TEX-N-2C" transform="translate(500,0)"></use><use data-c="36" xlink:href="#MJX-12-TEX-N-36" transform="translate(778,0)"></use><use data-c="30" xlink:href="#MJX-12-TEX-N-30" transform="translate(1278,0)"></use><use data-c="30" xlink:href="#MJX-12-TEX-N-30" transform="translate(1778,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>2,600</mn></math></mjx-assistive-mml></mjx-container> is the sample <em>size</em>, not the sample.</li>
+      <li data-reveal=""><strong>Variable.</strong> Whether or not the student works more than <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 1000 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-13-TEX-N-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path id="MJX-13-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="32" xlink:href="#MJX-13-TEX-N-32"></use><use data-c="30" xlink:href="#MJX-13-TEX-N-30" transform="translate(500,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>20</mn></math></mjx-assistive-mml></mjx-container> hours a week.</li>
+      <li data-reveal=""><strong>Statistic.</strong> <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.816ex;" xmlns="http://www.w3.org/2000/svg" width="11.235ex" height="2.79ex" role="img" focusable="false" viewBox="0 -872.7 4965.8 1233.3" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-14-TEX-N-31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path><path id="MJX-14-TEX-N-34" d="M462 0Q444 3 333 3Q217 3 199 0H190V46H221Q241 46 248 46T265 48T279 53T286 61Q287 63 287 115V165H28V211L179 442Q332 674 334 675Q336 677 355 677H373L379 671V211H471V165H379V114Q379 73 379 66T385 54Q393 47 442 46H471V0H462ZM293 211V545L74 212L183 211H293Z"></path><path id="MJX-14-TEX-N-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path id="MJX-14-TEX-N-36" d="M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z"></path><path id="MJX-14-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path><path id="MJX-14-TEX-N-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path><path id="MJX-14-TEX-N-2E" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mn" transform="translate(220,394) scale(0.707)"><use data-c="31" xlink:href="#MJX-14-TEX-N-31"></use><use data-c="31" xlink:href="#MJX-14-TEX-N-31" transform="translate(500,0)"></use><use data-c="34" xlink:href="#MJX-14-TEX-N-34" transform="translate(1000,0)"></use><use data-c="34" xlink:href="#MJX-14-TEX-N-34" transform="translate(1500,0)"></use></g><g data-mml-node="mn" transform="translate(220,-345) scale(0.707)"><use data-c="32" xlink:href="#MJX-14-TEX-N-32"></use><use data-c="36" xlink:href="#MJX-14-TEX-N-36" transform="translate(500,0)"></use><use data-c="30" xlink:href="#MJX-14-TEX-N-30" transform="translate(1000,0)"></use><use data-c="30" xlink:href="#MJX-14-TEX-N-30" transform="translate(1500,0)"></use></g><rect width="1614.2" height="60" x="120" y="220"></rect></g><g data-mml-node="mo" transform="translate(2132,0)"><use data-c="3D" xlink:href="#MJX-14-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(3187.8,0)"><use data-c="30" xlink:href="#MJX-14-TEX-N-30"></use><use data-c="2E" xlink:href="#MJX-14-TEX-N-2E" transform="translate(500,0)"></use><use data-c="34" xlink:href="#MJX-14-TEX-N-34" transform="translate(778,0)"></use><use data-c="34" xlink:href="#MJX-14-TEX-N-34" transform="translate(1278,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mfrac><mn>1144</mn><mn>2600</mn></mfrac><mo>=</mo><mn>0.44</mn></math></mjx-assistive-mml></mjx-container>, or <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.127ex;" xmlns="http://www.w3.org/2000/svg" width="4.147ex" height="1.824ex" role="img" focusable="false" viewBox="0 -750 1833 806" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-15-TEX-N-34" d="M462 0Q444 3 333 3Q217 3 199 0H190V46H221Q241 46 248 46T265 48T279 53T286 61Q287 63 287 115V165H28V211L179 442Q332 674 334 675Q336 677 355 677H373L379 671V211H471V165H379V114Q379 73 379 66T385 54Q393 47 442 46H471V0H462ZM293 211V545L74 212L183 211H293Z"></path><path id="MJX-15-TEX-N-25" d="M465 605Q428 605 394 614T340 632T319 641Q332 608 332 548Q332 458 293 403T202 347Q145 347 101 402T56 548Q56 637 101 693T202 750Q241 750 272 719Q359 642 464 642Q580 642 650 732Q662 748 668 749Q670 750 673 750Q682 750 688 743T693 726Q178 -47 170 -52Q166 -56 160 -56Q147 -56 142 -45Q137 -36 142 -27Q143 -24 363 304Q469 462 525 546T581 630Q528 605 465 605ZM207 385Q235 385 263 427T292 548Q292 617 267 664T200 712Q193 712 186 709T167 698T147 668T134 615Q132 595 132 548V527Q132 436 165 403Q183 385 203 385H207ZM500 146Q500 234 544 290T647 347Q699 347 737 292T776 146T737 0T646 -56Q590 -56 545 0T500 146ZM651 -18Q679 -18 707 24T736 146Q736 215 711 262T644 309Q637 309 630 306T611 295T591 265T578 212Q577 200 577 146V124Q577 -18 647 -18H651Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="34" xlink:href="#MJX-15-TEX-N-34"></use><use data-c="34" xlink:href="#MJX-15-TEX-N-34" transform="translate(500,0)"></use></g><g data-mml-node="mi" transform="translate(1000,0)"><use data-c="25" xlink:href="#MJX-15-TEX-N-25"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>44</mn><mi mathvariant="normal">%</mi></math></mjx-assistive-mml></mjx-container> — <em>calculated</em>.</li>
+      <li data-reveal=""><strong>Parameter.</strong> <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.127ex;" xmlns="http://www.w3.org/2000/svg" width="4.147ex" height="1.824ex" role="img" focusable="false" viewBox="0 -750 1833 806" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-16-TEX-N-34" d="M462 0Q444 3 333 3Q217 3 199 0H190V46H221Q241 46 248 46T265 48T279 53T286 61Q287 63 287 115V165H28V211L179 442Q332 674 334 675Q336 677 355 677H373L379 671V211H471V165H379V114Q379 73 379 66T385 54Q393 47 442 46H471V0H462ZM293 211V545L74 212L183 211H293Z"></path><path id="MJX-16-TEX-N-25" d="M465 605Q428 605 394 614T340 632T319 641Q332 608 332 548Q332 458 293 403T202 347Q145 347 101 402T56 548Q56 637 101 693T202 750Q241 750 272 719Q359 642 464 642Q580 642 650 732Q662 748 668 749Q670 750 673 750Q682 750 688 743T693 726Q178 -47 170 -52Q166 -56 160 -56Q147 -56 142 -45Q137 -36 142 -27Q143 -24 363 304Q469 462 525 546T581 630Q528 605 465 605ZM207 385Q235 385 263 427T292 548Q292 617 267 664T200 712Q193 712 186 709T167 698T147 668T134 615Q132 595 132 548V527Q132 436 165 403Q183 385 203 385H207ZM500 146Q500 234 544 290T647 347Q699 347 737 292T776 146T737 0T646 -56Q590 -56 545 0T500 146ZM651 -18Q679 -18 707 24T736 146Q736 215 711 262T644 309Q637 309 630 306T611 295T591 265T578 212Q577 200 577 146V124Q577 -18 647 -18H651Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="34" xlink:href="#MJX-16-TEX-N-34"></use><use data-c="34" xlink:href="#MJX-16-TEX-N-34" transform="translate(500,0)"></use></g><g data-mml-node="mi" transform="translate(1000,0)"><use data-c="25" xlink:href="#MJX-16-TEX-N-25"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>44</mn><mi mathvariant="normal">%</mi></math></mjx-assistive-mml></mjx-container> of <em>all</em> such students — <em>estimated</em>.</li>
+    </ul>
+  </section>
+  <section class="slide" id="s15" aria-labelledby="s15-h" data-slide-id="you-try-identify-the-parts">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Practice</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s15-h">Now You Try: Name the Parts</h2>
     <div class="callout callout-youtry">
-      <p class="callout-label lead-label">You Try 1.1.1.</p>
-      <p class="lead-in">Is each statement descriptive or inferential?</p>
+      <p class="callout-label lead-label">You Try 1.2.1.</p>
+      <p class="lead-in">A clinic checks <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="3.394ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 1500 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-17-TEX-N-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"></path><path id="MJX-17-TEX-N-35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"></path><path id="MJX-17-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="33" xlink:href="#MJX-17-TEX-N-33"></use><use data-c="35" xlink:href="#MJX-17-TEX-N-35" transform="translate(500,0)"></use><use data-c="30" xlink:href="#MJX-17-TEX-N-30" transform="translate(1000,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>350</mn></math></mjx-assistive-mml></mjx-container> of the dogs it treats and finds <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 1000 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-18-TEX-N-39" d="M352 287Q304 211 232 211Q154 211 104 270T44 396Q42 412 42 436V444Q42 537 111 606Q171 666 243 666Q245 666 249 666T257 665H261Q273 665 286 663T323 651T370 619T413 560Q456 472 456 334Q456 194 396 97Q361 41 312 10T208 -22Q147 -22 108 7T68 93T121 149Q143 149 158 135T173 96Q173 78 164 65T148 49T135 44L131 43Q131 41 138 37T164 27T206 22H212Q272 22 313 86Q352 142 352 280V287ZM244 248Q292 248 321 297T351 430Q351 508 343 542Q341 552 337 562T323 588T293 615T246 625Q208 625 181 598Q160 576 154 546T147 441Q147 358 152 329T172 282Q197 248 244 248Z"></path><path id="MJX-18-TEX-N-31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="39" xlink:href="#MJX-18-TEX-N-39"></use><use data-c="31" xlink:href="#MJX-18-TEX-N-31" transform="translate(500,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>91</mn></math></mjx-assistive-mml></mjx-container> overweight.</p>
       <ol>
-        <li>Of the 45 games the team played, it won 28. <span data-reveal=""><strong>Descriptive.</strong></span></li>
-        <li>A taste test of 80 shoppers suggests customers statewide prefer the new recipe. <span data-reveal=""><strong>Inferential.</strong></span></li>
-        <li>From 500 households, the agency estimates county median income is $71,000. <span data-reveal=""><strong>Inferential.</strong></span></li>
+        <li>Population? <span data-reveal=""><strong>All dogs the clinic treats.</strong></span></li>
+        <li>Sample? <span data-reveal=""><strong>The <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="3.394ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 1500 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-19-TEX-N-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"></path><path id="MJX-19-TEX-N-35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"></path><path id="MJX-19-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="33" xlink:href="#MJX-19-TEX-N-33"></use><use data-c="35" xlink:href="#MJX-19-TEX-N-35" transform="translate(500,0)"></use><use data-c="30" xlink:href="#MJX-19-TEX-N-30" transform="translate(1000,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>350</mn></math></mjx-assistive-mml></mjx-container> dogs checked.</strong></span></li>
+        <li>Variable? <span data-reveal=""><strong>Whether the dog is overweight.</strong></span></li>
+        <li>Statistic? <span data-reveal=""><strong><mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.816ex;" xmlns="http://www.w3.org/2000/svg" width="10.559ex" height="2.773ex" role="img" focusable="false" viewBox="0 -864.9 4667.2 1225.5" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-20-TEX-N-39" d="M352 287Q304 211 232 211Q154 211 104 270T44 396Q42 412 42 436V444Q42 537 111 606Q171 666 243 666Q245 666 249 666T257 665H261Q273 665 286 663T323 651T370 619T413 560Q456 472 456 334Q456 194 396 97Q361 41 312 10T208 -22Q147 -22 108 7T68 93T121 149Q143 149 158 135T173 96Q173 78 164 65T148 49T135 44L131 43Q131 41 138 37T164 27T206 22H212Q272 22 313 86Q352 142 352 280V287ZM244 248Q292 248 321 297T351 430Q351 508 343 542Q341 552 337 562T323 588T293 615T246 625Q208 625 181 598Q160 576 154 546T147 441Q147 358 152 329T172 282Q197 248 244 248Z"></path><path id="MJX-20-TEX-N-31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path><path id="MJX-20-TEX-N-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"></path><path id="MJX-20-TEX-N-35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"></path><path id="MJX-20-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path><path id="MJX-20-TEX-N-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path><path id="MJX-20-TEX-N-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path id="MJX-20-TEX-N-36" d="M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z"></path><path id="MJX-20-TEX-N-25" d="M465 605Q428 605 394 614T340 632T319 641Q332 608 332 548Q332 458 293 403T202 347Q145 347 101 402T56 548Q56 637 101 693T202 750Q241 750 272 719Q359 642 464 642Q580 642 650 732Q662 748 668 749Q670 750 673 750Q682 750 688 743T693 726Q178 -47 170 -52Q166 -56 160 -56Q147 -56 142 -45Q137 -36 142 -27Q143 -24 363 304Q469 462 525 546T581 630Q528 605 465 605ZM207 385Q235 385 263 427T292 548Q292 617 267 664T200 712Q193 712 186 709T167 698T147 668T134 615Q132 595 132 548V527Q132 436 165 403Q183 385 203 385H207ZM500 146Q500 234 544 290T647 347Q699 347 737 292T776 146T737 0T646 -56Q590 -56 545 0T500 146ZM651 -18Q679 -18 707 24T736 146Q736 215 711 262T644 309Q637 309 630 306T611 295T591 265T578 212Q577 200 577 146V124Q577 -18 647 -18H651Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mn" transform="translate(396.8,394) scale(0.707)"><use data-c="39" xlink:href="#MJX-20-TEX-N-39"></use><use data-c="31" xlink:href="#MJX-20-TEX-N-31" transform="translate(500,0)"></use></g><g data-mml-node="mn" transform="translate(220,-345) scale(0.707)"><use data-c="33" xlink:href="#MJX-20-TEX-N-33"></use><use data-c="35" xlink:href="#MJX-20-TEX-N-35" transform="translate(500,0)"></use><use data-c="30" xlink:href="#MJX-20-TEX-N-30" transform="translate(1000,0)"></use></g><rect width="1260.7" height="60" x="120" y="220"></rect></g><g data-mml-node="mo" transform="translate(1778.4,0)"><use data-c="3D" xlink:href="#MJX-20-TEX-N-3D"></use></g><g data-mml-node="mn" transform="translate(2834.2,0)"><use data-c="32" xlink:href="#MJX-20-TEX-N-32"></use><use data-c="36" xlink:href="#MJX-20-TEX-N-36" transform="translate(500,0)"></use></g><g data-mml-node="mi" transform="translate(3834.2,0)"><use data-c="25" xlink:href="#MJX-20-TEX-N-25"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mfrac><mn>91</mn><mn>350</mn></mfrac><mo>=</mo><mn>26</mn><mi mathvariant="normal">%</mi></math></mjx-assistive-mml></mjx-container>, calculated.</strong></span></li>
+        <li>Parameter? <span data-reveal=""><strong>The percentage overweight among all of them.</strong></span></li>
       </ol>
-      <p data-reveal="">The test: does the claim stay inside the group measured, or step outside it?</p>
     </div>
   </section>
-  <section class="slide" id="s12" aria-labelledby="s12-h" data-slide-id="role-of-probability">
+  <section class="slide slide-question" id="s16" aria-labelledby="s16-h" data-slide-id="is-that-number-a-number">
     <div class="slide-band">
-      <p class="slide-kicker">§1.1 The Role of Probability</p>
+      <p class="slide-kicker">§1.2 Think About It</p>
       <p class="slide-course">MATH 11</p>
     </div>
-    <h2 id="s12-h">Why Probability Is Here</h2>
-    <p>Probability is the mathematical foundation that connects descriptive and inferential statistics. When we use sample data to make claims about a population, we can never be 100% certain our conclusions are correct. Probability lets us measure that uncertainty and say how confident we are.</p>
+    <h2 id="s16-h">Is That Number a Number?</h2>
+    <p class="prompt">Your student ID is written with digits. Does adding two student ID numbers tell you anything?</p>
+    <p data-reveal="">No. Digits alone do not make data numerical. What matters is whether the values <em>count</em> or <em>measure</em> something, or merely <em>name</em> it.</p>
+  </section>
+  <section class="slide" id="s17" aria-labelledby="s17-h" data-slide-id="quantitative-data">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Quantitative Data</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s17-h">When the Numbers Mean Amounts</h2>
     <div class="callout callout-definition">
-      <span class="callout-label">Definition 1.1.6</span>
-      <p>The <strong>probability</strong> of an event is a number between <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="1.131ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 500 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-6-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="30" xlink:href="#MJX-6-TEX-N-30"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>0</mn></math></mjx-assistive-mml></mjx-container> and <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: 0;" xmlns="http://www.w3.org/2000/svg" width="1.131ex" height="1.507ex" role="img" focusable="false" viewBox="0 -666 500 666" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-7-TEX-N-31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="31" xlink:href="#MJX-7-TEX-N-31"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>1</mn></math></mjx-assistive-mml></mjx-container> (inclusive) that represents how likely it is that the event will occur.</p>
+      <span class="callout-label">Definition 1.2.11</span>
+      <p><strong>Quantitative data</strong> (also called <strong>numerical data</strong>) consists of numbers representing counts or measurements.</p>
     </div>
+    <p data-reveal="">When reporting quantitative data, always include appropriate units.</p>
   </section>
-  <section class="slide" id="s13" aria-labelledby="s13-h" data-example="4" data-slide-id="is-this-coin-fair">
+  <section class="slide" id="s18" aria-labelledby="s18-h" data-slide-id="qualitative-data">
     <div class="slide-band">
-      <p class="slide-kicker">§1.1 Example 4</p>
+      <p class="slide-kicker">§1.2 Qualitative Data</p>
       <p class="slide-course">MATH 11</p>
     </div>
-    <h2 id="s13-h">Is This Coin Fair?</h2>
-    <p>Every NFL game starts with a coin toss. We assume the coin is fair — tossed many times, heads about half the time.</p>
-    <p>Suppose we flip one particular coin <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 1000 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-8-TEX-N-36" d="M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z"></path><path id="MJX-8-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="36" xlink:href="#MJX-8-TEX-N-36"></use><use data-c="30" xlink:href="#MJX-8-TEX-N-30" transform="translate(500,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>60</mn></math></mjx-assistive-mml></mjx-container> times and get <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: 0;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.532ex" role="img" focusable="false" viewBox="0 -677 1000 677" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-9-TEX-N-34" d="M462 0Q444 3 333 3Q217 3 199 0H190V46H221Q241 46 248 46T265 48T279 53T286 61Q287 63 287 115V165H28V211L179 442Q332 674 334 675Q336 677 355 677H373L379 671V211H471V165H379V114Q379 73 379 66T385 54Q393 47 442 46H471V0H462ZM293 211V545L74 212L183 211H293Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="34" xlink:href="#MJX-9-TEX-N-34"></use><use data-c="34" xlink:href="#MJX-9-TEX-N-34" transform="translate(500,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>44</mn></math></mjx-assistive-mml></mjx-container> heads and <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 1000 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-10-TEX-N-31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path><path id="MJX-10-TEX-N-36" d="M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="31" xlink:href="#MJX-10-TEX-N-31"></use><use data-c="36" xlink:href="#MJX-10-TEX-N-36" transform="translate(500,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>16</mn></math></mjx-assistive-mml></mjx-container> tails.</p>
-    <p data-reveal="">A fair coin would give about <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.557ex" role="img" focusable="false" viewBox="0 -666 1000 688" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-11-TEX-N-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"></path><path id="MJX-11-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="33" xlink:href="#MJX-11-TEX-N-33"></use><use data-c="30" xlink:href="#MJX-11-TEX-N-30" transform="translate(500,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>30</mn></math></mjx-assistive-mml></mjx-container> heads. We got <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: 0;" xmlns="http://www.w3.org/2000/svg" width="2.262ex" height="1.532ex" role="img" focusable="false" viewBox="0 -677 1000 677" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-12-TEX-N-34" d="M462 0Q444 3 333 3Q217 3 199 0H190V46H221Q241 46 248 46T265 48T279 53T286 61Q287 63 287 115V165H28V211L179 442Q332 674 334 675Q336 677 355 677H373L379 671V211H471V165H379V114Q379 73 379 66T385 54Q393 47 442 46H471V0H462ZM293 211V545L74 212L183 211H293Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="34" xlink:href="#MJX-12-TEX-N-34"></use><use data-c="34" xlink:href="#MJX-12-TEX-N-34" transform="translate(500,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>44</mn></math></mjx-assistive-mml></mjx-container>.</p>
-    <p data-reveal="">Probability asks: <em>if this coin really were fair, how often would it do something this extreme?</em> If almost never, we doubt the coin.</p>
-    <p data-reveal="">That reasoning is <strong>hypothesis testing</strong> — <strong>Chapters 9–11</strong>.</p>
+    <h2 id="s18-h">When the Values Are Names</h2>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.2.12</span>
+      <p><strong>Qualitative data</strong> (also called <strong>categorical data</strong>) consists of names or labels that represent categories.</p>
+    </div>
+    <p data-reveal="">A label may still be written with digits. That does not make it a measurement.</p>
   </section>
-  <section class="slide" id="s14" aria-labelledby="s14-h" data-slide-id="not-mainly-arithmetic">
+  <section class="slide" id="s19" aria-labelledby="s19-h" data-example="3" data-slide-id="quantitative-or-qualitative">
     <div class="slide-band">
-      <p class="slide-kicker">§1.1 A Warning</p>
+      <p class="slide-kicker">§1.2 Example 3</p>
       <p class="slide-course">MATH 11</p>
     </div>
-    <h2 id="s14-h">Statistics Is Not Mainly Arithmetic</h2>
-    <div class="callout callout-warning">
-      <span class="callout-label">Warning 1.1.8</span>
-      <p>As we progress through this course, you will be presented with many formulas and procedures. This may mislead you into thinking that statistics is mainly about calculating things. This could not be further from the truth.</p>
-    </div>
+    <h2 id="s19-h">Sorting Numbers From Labels</h2>
+    <ol>
+      <li>The number of text messages a student sends in a day. <span data-reveal=""><strong>Quantitative</strong> — it is a count.</span></li>
+      <li>The brand of phone a student uses. <span data-reveal=""><strong>Qualitative</strong> — it names a category.</span></li>
+      <li>The ZIP code of a student’s home address. <span data-reveal=""><strong>Qualitative.</strong> Be careful here. It is written with digits, but it labels a place. Adding two ZIP codes produces nothing useful.</span></li>
+    </ol>
   </section>
-  <section class="slide" id="s15" aria-labelledby="s15-h" data-slide-id="not-mainly-arithmetic-continued">
+  <section class="slide" id="s20" aria-labelledby="s20-h" data-slide-id="you-try-quantitative-vs-qualitative">
     <div class="slide-band">
-      <p class="slide-kicker">§1.1 A Warning, continued</p>
+      <p class="slide-kicker">§1.2 Practice</p>
       <p class="slide-course">MATH 11</p>
     </div>
-    <h2 id="s15-h">What Your Job Actually Is</h2>
-    <div class="callout callout-warning">
-      <span class="callout-label">Warning 1.1.8, continued</span>
-      <p>While calculations are necessary, it is more important that you understand <strong>how to interpret the results</strong> of these calculations and procedures. Modern technology can perform statistical calculations quickly and accurately. Your job is to understand what the numbers mean and how to use them to make informed decisions.</p>
+    <h2 id="s20-h">Now You Try: Numbers or Names?</h2>
+    <div class="callout callout-youtry">
+      <p class="callout-label lead-label">You Try 1.2.2.</p>
+      <p class="lead-in">For each variable, decide whether the data it produces is quantitative or qualitative.</p>
+      <ol>
+        <li>The price of a textbook, in dollars. <span data-reveal=""><strong>Quantitative.</strong></span></li>
+        <li>A patient’s blood type. <span data-reveal=""><strong>Qualitative.</strong></span></li>
+        <li>A runner’s bib number in a race. <span data-reveal=""><strong>Qualitative.</strong></span></li>
+        <li>The number of pets in a household. <span data-reveal=""><strong>Quantitative.</strong></span></li>
+      </ol>
+      <p data-reveal="">The test: would arithmetic on the values mean anything?</p>
+    </div>
+  </section>
+  <section class="slide" id="s21" aria-labelledby="s21-h" data-slide-id="discrete-data">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Discrete Data</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s21-h">Values You Can Count</h2>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.2.14</span>
+      <p><strong>Discrete data</strong> is quantitative data that can only take on a finite or countable number of values.</p>
+    </div>
+    <p data-reveal="">A rule of thumb: data that comes from <em>counting</em> is usually discrete.</p>
+  </section>
+  <section class="slide" id="s22" aria-labelledby="s22-h" data-slide-id="continuous-data">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Continuous Data</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s22-h">Values You Can Measure</h2>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.2.15</span>
+      <p><strong>Continuous data</strong> is quantitative data that can take on any value within a range, including fractional values.</p>
+    </div>
+    <p data-reveal="">And data that comes from <em>measuring</em> is usually continuous.</p>
+  </section>
+  <section class="slide" id="s23" aria-labelledby="s23-h" data-example="4" data-slide-id="discrete-or-continuous">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Example 4</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s23-h">Sorting Counts From Measurements</h2>
+    <ol>
+      <li>The number of eggs a hen lays in a month. <span data-reveal=""><strong>Discrete</strong> — a count. You cannot have <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.05ex;" xmlns="http://www.w3.org/2000/svg" width="2.891ex" height="1.581ex" role="img" focusable="false" viewBox="0 -677 1278 699" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-21-TEX-N-34" d="M462 0Q444 3 333 3Q217 3 199 0H190V46H221Q241 46 248 46T265 48T279 53T286 61Q287 63 287 115V165H28V211L179 442Q332 674 334 675Q336 677 355 677H373L379 671V211H471V165H379V114Q379 73 379 66T385 54Q393 47 442 46H471V0H462ZM293 211V545L74 212L183 211H293Z"></path><path id="MJX-21-TEX-N-2E" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60Z"></path><path id="MJX-21-TEX-N-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><use data-c="34" xlink:href="#MJX-21-TEX-N-34"></use><use data-c="2E" xlink:href="#MJX-21-TEX-N-2E" transform="translate(500,0)"></use><use data-c="33" xlink:href="#MJX-21-TEX-N-33" transform="translate(778,0)"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>4.3</mn></math></mjx-assistive-mml></mjx-container> eggs.</span></li>
+      <li>The weight of a bag of oranges. <span data-reveal=""><strong>Continuous</strong> — it can be measured to any precision.</span></li>
+      <li>The temperature of a cup of coffee as it cools. <span data-reveal=""><strong>Continuous</strong> — it passes through every value in between.</span></li>
+    </ol>
+  </section>
+  <section class="slide" id="s24" aria-labelledby="s24-h" data-slide-id="you-try-discrete-vs-continuous">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Practice</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s24-h">Now You Try: Counts or Measurements?</h2>
+    <div class="callout callout-youtry">
+      <p class="callout-label lead-label">You Try 1.2.3.</p>
+      <p class="lead-in">For each variable, decide whether the data it produces is discrete or continuous.</p>
+      <ol>
+        <li>The number of songs on a playlist. <span data-reveal=""><strong>Discrete.</strong></span></li>
+        <li>The rain that falls in a storm, in inches. <span data-reveal=""><strong>Continuous.</strong></span></li>
+        <li>The age of a tree, recorded to the nearest year. <span data-reveal=""><strong>Continuous</strong> — the recording is rounded, the age is not.</span></li>
+        <li>The number of students absent from class. <span data-reveal=""><strong>Discrete.</strong></span></li>
+      </ol>
+    </div>
+  </section>
+  <section class="slide" id="s25" aria-labelledby="s25-h" data-slide-id="classification-tree">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.2 Summary</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s25-h">Putting It Together</h2>
+    <div class="tree">
+      <ul>
+        <li>
+          <span class="node">Data</span>
+          <ul>
+            <li data-reveal=""><span class="node">Qualitative (Categorical)<span class="edge">names or labels</span></span></li>
+            <li data-reveal=""><span class="node">Quantitative (Numerical)<span class="edge">numbers</span></span>
+              <ul>
+                <li data-reveal=""><span class="node">Discrete<span class="edge">counting</span></span></li>
+                <li data-reveal=""><span class="node">Continuous<span class="edge">measuring</span></span></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </section>
 </main>
