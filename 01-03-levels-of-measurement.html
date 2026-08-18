@@ -1,22 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-deck="01-03-levels-of-measurement">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Math 11 Slide Decks</title>
+<title>Math 11 §1.3 — Levels of Measurement</title>
 <!-- Inline favicon: a browser asks for /favicon.ico by default and would
      404 on the deploy host and off disk. Data URI, not a file, so the
      page still makes zero external requests. Mark reuses the presenter
      icon (scripts/presenter/make-icon.mjs): accent field, white slide
      card, accent title bar. -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20180%20180%27%3E%3Crect%20width%3D%27180%27%20height%3D%27180%27%20fill%3D%27%231a5fb4%27%2F%3E%3Crect%20x%3D%2720%27%20y%3D%2748%27%20width%3D%27140%27%20height%3D%2784%27%20fill%3D%27%23ffffff%27%2F%3E%3Crect%20x%3D%2732%27%20y%3D%2760%27%20width%3D%27116%27%20height%3D%2720%27%20fill%3D%27%231a5fb4%27%2F%3E%3C%2Fsvg%3E">
-<meta name="shell-theme" content="themes/neutral.css">
+<meta name="deck-course" content="math-11">
+<meta name="deck-chapter" content="1">
+<meta name="deck-section" content="1.3">
+<meta name="deck-date" content="2026-08-17">
 <style>
-/* 1) THEME BLOCK — one themes/<name>.css block, license comment stripped and
-      replaced by a short plain-text notice (no URLs allowed in this file)   */
-/* Font: Source Sans 3 (c) Adobe.
-   Licensed under the SIL Open Font License 1.1. Full texts: licenses/
-   directory of the accessible-slides repository. */
+/* 1) THEME BLOCK — themes/neutral.css */
+/* =============================================================================
+   accessible-slides theme — embedded font licenses (OFL 1.1)
+   This notice travels with every deck and landing page generated from this
+   theme (the theme block is pasted verbatim into each <style>). Full license
+   texts and this notice's source repo copy: licenses/ and
+   THIRD_PARTY_NOTICES.md in the accessible-slides skill repo.
+
+   Source Sans 3
+   Copyright 2010-2020 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'. All Rights Reserved. Source is a trademark of Adobe in the United States and/or other countries.
+   This Font Software is licensed under the SIL Open Font License, Version 1.1.
+   https://openfontlicense.org
+   ============================================================================= */
 
 @font-face {
   font-family: 'Source Sans 3';
@@ -115,380 +126,1281 @@
   --callout-youtry-fill:#fff9e0; --callout-youtry-edge:#c47c00; --callout-youtry-ink:#8f3c00;
   --callout-warning-fill:#fff0f0; --callout-warning-edge:#a91d11; --callout-warning-ink:#a91d11;
 }
+/* 2) BASE BLOCK  — templates/deck-base.css */
+/* === accessible-slides deck-base.css ===
+   Layout + behavior CSS shared by every deck. Colors, fonts, and sizes come
+   from theme custom properties (see themes/). Two modes:
+   - reading (default): slides as cards in document flow; reflowable (WCAG 1.4.10)
+   - presentation (body.mode-present): one slide in a locked 16:9 stage    */
 
-
-/* 2) SHELL BLOCK — edge handle + slide-out drawer (the instructor-approved
-   design). No persistent header. A slim labeled tab ("Index") stays attached
-   to the left edge of the viewport, vertically centered; it slides out with
-   the drawer and its label flips to "Close". Over a loaded deck the drawer
-   is a modal dialog (scrim, focus trap, Esc); on the bare URL it is simply
-   open, non-modal, with a welcome card beside it.
-   The page-level dark-mode toggle sits fixed in the top-right corner — one
-   control for the ENTIRE page: shell chrome, drawer, and the loaded deck
-   (the shell posts the theme into the iframe; see the script). It has an
-   opaque button background so it stays readable over any deck content.
-   Presentation mode: the deck fills the whole viewport; the handle sits on
-   the iframe's left edge (riding the letterbox gutter beside the 16:9 stage
-   on wide screens) and the toggle sits over the deck toolbar's right end —
-   in NON-fullscreen presentation the toggle covers the deck's slide counter
-   (the counter is right-aligned in the toolbar, directly beneath the
-   toggle); that is this design's trade-off. OS or browser fullscreen (the
-   deck's iframe going fullscreen) covers ALL shell chrome — handle and
-   toggle — entirely, so a real presentation sees the full counter and no
-   shell chrome; leaving fullscreen restores both controls. */
 * { box-sizing: border-box; }
-[hidden] { display: none !important; }
-html { color-scheme: light dark; height: 100%; }
+html { color-scheme: light dark; }
 body {
-  margin: 0; height: 100%;
+  margin: 0;
   font-family: var(--font-body);
   background: var(--bg-page);
   color: var(--text-primary);
   line-height: 1.55;
-  overflow: hidden;
 }
-#viewer { position: fixed; inset: 0; background: var(--bg-page); }
-#viewer iframe { display: block; width: 100%; height: 100%; border: 0; }
-#welcome { position: fixed; inset: 0; overflow: auto; padding: 3.5rem 1rem 1.5rem; }
-.welcome-card {
-  max-width: 26rem; margin: 0 auto;
+
+/* --- Reading mode (default): slide cards on a tinted page --- */
+.stage-wrap { padding: 2.25rem 1rem 3.5rem; }
+.slide {
+  max-width: 46rem;
+  margin: 0 auto 1.75rem;
+  padding: clamp(1.5rem, 5vw, 2.75rem) clamp(1.25rem, 6vw, 3rem);
   background: var(--bg-slide);
   border: 1px solid var(--card-border, var(--rule));
   border-radius: var(--card-radius, 14px);
-  box-shadow: var(--shadow-card);
-  padding: 1.5rem 1.75rem;
+  box-shadow: var(--shadow-card, 0 8px 24px rgba(0, 0, 0, 0.08));
 }
-.welcome-card h1 {
-  font-family: var(--font-display); font-weight: 900;
-  color: var(--heading); font-size: 1.45rem; line-height: 1.2;
-  margin: 0 0 0.75rem;
+.slide h1, .slide h2 {
+  font-family: var(--font-display);
+  font-weight: 900; /* sans display voice: Black weight carries the display role */
+  color: var(--heading);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.1rem;
+  text-wrap: balance;
 }
-.welcome-card h1:focus { outline: none; } /* focus target after Back; focus-visible ring below still applies */
-.welcome-card h1::after {
-  content: ""; display: block; width: 3.25rem; height: 0.3rem;
-  margin-top: 0.5rem; background: var(--accent, var(--heading));
+.slide h1 { font-size: clamp(2.1rem, 6vw, 2.9rem); }
+.slide h2 { font-size: clamp(1.55rem, 4.5vw, 1.9rem); }
+/* Deliberate heading accent: a short thick bar, not a full-width hairline */
+.slide h2::after {
+  content: "";
+  display: block;
+  width: 3.25rem;
+  height: 0.3rem;
+  margin-top: 0.55rem;
+  background: var(--accent, var(--heading));
   border-radius: 999px;
 }
-.welcome-card p { margin: 0.6rem 0 0; font-size: 0.95rem; }
-/* On wide screens, keep the welcome card clear of the open drawer. */
-@media (min-width: 800px) {
-  body.drawer-open #welcome { padding-left: calc(min(19rem, 100vw - 3.25rem) + 3rem); }
+.slide p { margin: 0.85rem 0; }
+.slide ul, .slide ol { margin: 0.85rem 0; padding-left: 1.4rem; }
+.slide li { margin: 0.5rem 0; }
+.slide li::marker { color: var(--accent, var(--heading)); }
+.slide a { color: var(--link); }
+
+/* Slide kicker: small letterspaced label (section context). Inside the
+   header band on content slides; a flow line on the title slide. */
+.slide-kicker {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary, var(--text-primary));
+  margin: 0 0 1rem;
 }
-#scrim { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); z-index: 30; }
-#drawer {
-  position: fixed; top: 0; bottom: 0; left: 0;
-  width: min(19rem, calc(100vw - 3.25rem)); /* the handle stays visible even at 320px */
-  background: var(--bg-slide);
-  border-right: 1px solid var(--card-border, var(--rule));
-  box-shadow: var(--shadow-card);
-  z-index: 40;
-  overflow-y: auto; overflow-x: hidden;
-  padding: 0 0 1rem;
-  transform: translateX(-102%);
-  visibility: hidden; /* keeps the closed drawer's links out of the tab order */
-  transition: transform 160ms ease, visibility 0s 160ms;
+
+/* Header band: every slide EXCEPT the title slide opens with a header
+   visually separate from the slide body — a full-strength accent band
+   with reversed text, echoing the accent bar at the stage's bottom edge
+   so the two frame the slide. LEFT: the section context in the Black
+   display weight ("§1.2 Topic" — plain space, never a separator dot).
+   RIGHT: the course label at bold weight ("MATH 10A", the display form
+   of the deck-course meta) — the weight contrast keeps the two texts
+   distinct. Text color is the already-vetted --bg-slide-on---accent
+   manifest pair (4.5:1 floor, both themes, both schemes). Never restyle
+   or reposition the band per slide; the title slide never carries one
+   (it names the course in its own kicker line). */
+.slide-band {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.35rem 1.5rem;
+  margin: calc(-1 * clamp(1.5rem, 5vw, 2.75rem)) calc(-1 * clamp(1.25rem, 6vw, 3rem)) 1.5rem;
+  padding: 0.7rem clamp(1.25rem, 6vw, 3rem);
+  background: var(--accent, var(--heading));
+  border-radius: var(--card-radius, 14px) var(--card-radius, 14px) 0 0;
 }
-body.drawer-open #drawer { transform: none; visibility: visible; transition: transform 160ms ease; }
-#drawer:focus { outline: none; } /* focus target on open; inner controls keep rings */
-.drawer-head {
-  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
-  padding: 0.6rem 1rem;
+/* Band paragraphs carry no outer margins (specificity beats the generic
+   slide p margins in both modes and in deck-block density overrides). */
+.slide .slide-band p { margin: 0; }
+.slide-band .slide-kicker {
+  color: var(--bg-slide);
+  font-weight: 900; /* Black display weight — the deck's display voice */
+}
+.slide-course {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bg-slide);
+  margin: 0;
+  text-align: right;
+}
+
+/* Title slide: oversized display type + an asymmetric accent band on top */
+.slide-title {
+  border-top: 0.5rem solid var(--accent, var(--heading));
+  padding-top: clamp(2.25rem, 7vw, 3.5rem);
+  padding-bottom: clamp(2.25rem, 7vw, 3.5rem);
+}
+.slide-title h1 {
+  font-size: clamp(2.5rem, 8vw, 3.6rem);
+  letter-spacing: -0.01em;
+  margin-bottom: 0.85rem;
+}
+.slide-title h1::after {
+  content: "";
+  display: block;
+  width: 4.5rem;
+  height: 0.38rem;
+  margin-top: 0.9rem;
+  background: var(--accent, var(--heading));
+  border-radius: 999px;
+}
+.slide-subtitle {
+  font-size: 1.15rem;
+  color: var(--text-secondary, var(--text-primary));
+  margin: 0 0 1.4rem;
+}
+.slide-meta {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary, var(--text-primary));
+  margin: 0;
+}
+
+/* Callout: definition / key-idea block on a soft accent tint */
+.callout {
+  background: var(--accent-soft, var(--bg-chrome));
+  border-left: 0.375rem solid var(--accent, var(--heading));
+  border-radius: 0 12px 12px 0;
+  padding: 1.1rem 1.35rem;
+  margin: 1.4rem 0;
+}
+.callout > :first-child { margin-top: 0; }
+.callout > :last-child { margin-bottom: 0; }
+.callout-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--heading);
+  margin-bottom: 0.45rem;
+}
+
+/* Component callouts — the SAME components as the instructor's PreTeXt
+   notes: anatomy and colors replicate the notes' box system (measured from
+   the BUILT pages in light AND dark mode — the notes keep light fills and
+   pin dark body text in dark mode; only the theorem bar/label and the
+   example label change color in dark). The kind is always ALSO named by
+   the visible label text, so color never carries meaning alone. Anatomy
+   (em-based, so it scales identically on the stage):
+   - tab-badge (LT, definition, warning): fill + 2px/0.125em 4-side border, 6px
+     radius, label badge overlapping the top border, white badge text.
+   - left-bar (theorem, procedure): fill + 3px/0.1875em left bar, square
+     corners, bar-colored bold label line.
+   - You Try: fill + 4px/0.25em left bar, right-side 4px radius.
+   - example: fill + 1px/0.0625em full border, square corners. */
+.callout-lt         { --co-fill: var(--callout-lt-fill);         --co-edge: var(--callout-lt-edge);         --co-ink: var(--callout-lt-ink); }
+.callout-definition { --co-fill: var(--callout-definition-fill); --co-edge: var(--callout-definition-edge); --co-ink: var(--callout-definition-ink); }
+.callout-theorem    { --co-fill: var(--callout-theorem-fill);    --co-edge: var(--callout-theorem-edge);    --co-ink: var(--callout-theorem-ink); }
+.callout-procedure  { --co-fill: var(--callout-procedure-fill);  --co-edge: var(--callout-procedure-edge);  --co-ink: var(--callout-procedure-ink); }
+.callout-example    { --co-fill: var(--callout-example-fill);    --co-edge: var(--callout-example-edge);    --co-ink: var(--callout-example-ink); }
+.callout-youtry     { --co-fill: var(--callout-youtry-fill);     --co-edge: var(--callout-youtry-edge);     --co-ink: var(--callout-youtry-ink); }
+.callout-warning    { --co-fill: var(--callout-warning-fill);    --co-edge: var(--callout-warning-edge);    --co-ink: var(--callout-warning-ink); }
+.callout-lt, .callout-definition, .callout-theorem,
+.callout-procedure, .callout-example, .callout-youtry, .callout-warning {
+  background: var(--co-fill);
+  color: var(--callout-text, var(--text-primary)); /* notes pin #1a1a1a in both modes */
+}
+.callout-lt li::marker, .callout-definition li::marker,
+.callout-theorem li::marker, .callout-procedure li::marker,
+.callout-example li::marker, .callout-youtry li::marker,
+.callout-warning li::marker {
+  color: var(--callout-text, currentColor); /* markers stay dark inside light box fills */
+}
+.callout-lt .callout-label, .callout-definition .callout-label,
+.callout-theorem .callout-label, .callout-procedure .callout-label,
+.callout-example .callout-label, .callout-youtry .callout-label,
+.callout-warning .callout-label {
+  color: var(--co-ink);
+  font-family: var(--font-body);
+  text-transform: none;
+  letter-spacing: normal;
+}
+/* tab-badge kinds */
+.callout-lt, .callout-definition, .callout-warning {
+  position: relative;
+  border: 0.125em solid var(--co-edge);
+  border-radius: 6px;
+  padding: 1.1em 1.2em 1em;
+  margin: 1.8em 0 1.5em;
+}
+.callout-lt > .callout-label, .callout-definition > .callout-label,
+.callout-warning > .callout-label {
+  position: absolute;
+  top: -0.7em;
+  left: 1.2em;
+  display: inline-block;
+  margin: 0;
+  padding: 0.18em 0.8em;
+  border-radius: 4px;
+  background: var(--co-edge);
+  color: var(--callout-badge-text, #ffffff);
+  font-size: 0.85em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+/* left-bar kinds */
+.callout-theorem, .callout-procedure {
+  border: none;
+  border-left: 0.1875em solid var(--co-edge);
+  border-radius: 0;
+  padding: 1em 1.2em 1em 1.5em;
+  margin: 1.5em 0;
+}
+.callout-theorem > .callout-label, .callout-procedure > .callout-label {
+  font-size: 1em;
+  font-weight: 700;
+  margin: 0 0 0.5em;
+}
+/* You Try */
+.callout-youtry {
+  border: none;
+  border-left: 0.25em solid var(--co-edge);
+  border-radius: 0 4px 4px 0;
+  padding: 0.8em 1em;
+  margin: 0.5em 0;
+}
+.callout-youtry > .callout-label {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 0 0 0.4em;
+}
+/* A You Try's problem statement is BODY text, never label text: the label
+   carries only "You Try N.M.K." and the statement is a complete sentence in
+   normal prose beside it. A bare fragment ("Discrete or continuous?") in
+   label styling reads as an extension of the label, which is wrong.
+   .lead-label on the label plus .lead-in on the statement runs the two on
+   one line, for slides that need that line's height back. */
+.callout-youtry > .callout-label.lead-label { display: inline; margin: 0 0.35em 0 0; }
+.callout-youtry > p.lead-in { display: inline; margin: 0; }
+/* example */
+.callout-example {
+  border: 0.0625em solid var(--co-edge);
+  border-radius: 0;
+  padding: 0.8em 1.2em;
+  margin: 0.5em 0;
+}
+.callout-example > .callout-label {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 0 0 0.4em;
+}
+
+/* Question / prompt slide: the engagement surface — visually distinct from
+   content slides (accent-tinted card, centered, oversized display prompt). */
+.slide-question { background: var(--accent-soft, var(--bg-slide)); text-align: center; }
+.slide-question h2::after { margin-left: auto; margin-right: auto; }
+.slide-question .prompt {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 5vw, 2.4rem);
+  font-weight: 900;
+  color: var(--heading);
+  line-height: 1.25;
+  max-width: 26ch;
+  margin: 1.2rem auto;
+  text-wrap: balance;
+}
+
+/* Section mark: oversized unboxed "§1.2" in the accent color — a
+   typographic element of the title composition (large-scale display text;
+   the accent/slide contrast pair covers it). */
+.slide-section-mark {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 6vw, 2.8rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--accent, var(--heading));
+  margin: 0 0 0.6rem;
+}
+
+/* Decorative motif: an oversized glyph/symbol anchoring a corner of the
+   projected slide. Purely decorative — markup MUST carry aria-hidden="true".
+   Hidden in reading mode (the document surface stays clean). */
+.slide-motif { display: none; }
+
+/* --- Deck chrome (both modes) --- */
+.deck-toolbar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+  padding: 0.55rem 1rem;
   background: var(--bg-chrome);
+  background: color-mix(in srgb, var(--bg-chrome) 92%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--card-border, var(--rule));
 }
-/* At narrow widths the fixed top-right theme toggle crosses into the
-   drawer's top strip; reserve room so it never covers the drawer title. */
-@media (max-width: 430px) {
-  .drawer-head { padding-right: 3.25rem; }
-}
-.drawer-title {
-  flex: 1 1 auto; min-width: 0;
-  font-family: var(--font-display); font-weight: 900;
-  font-size: 0.95rem; color: var(--heading);
-}
-button {
+.deck-toolbar button, .deck-toolbar a.btn-link, #toc-dialog button {
   font: inherit; font-size: 0.86rem; font-weight: 600;
   color: var(--btn-text); background: var(--btn-bg);
   border: 1px solid var(--btn-border); border-radius: 999px;
   padding: 0.32rem 0.95rem; cursor: pointer;
   transition: background-color 120ms ease, border-color 120ms ease;
 }
-button:hover { background: var(--btn-bg-hover); }
-button:active { transform: translateY(1px); }
-/* The edge handle: a labeled tab, keyboard reachable, riding the drawer
-   edge. Kept slim (small type, tight padding) so at common widths it sits
-   over the deck's page gutter and the slide card's left padding — never
-   over slide text (reading-mode text starts no closer than ~36px from the
-   left edge even at 320px; the handle is ~26px wide). */
-#handle {
-  position: fixed; left: 0; top: 50%; z-index: 41;
-  transform: translateY(-50%);
-  writing-mode: vertical-rl;
-  font-size: 0.8rem;
-  padding: 0.75rem 0.34rem;
-  border-radius: 0 12px 12px 0;
-  border-left: none;
-  font-weight: 700; letter-spacing: 0.06em;
-  box-shadow: var(--shadow-card);
-  transition: left 160ms ease;
+/* The handout link is a toolbar control, not body copy: it takes the button
+   shape, so it stays distinguishable by border and fill rather than by an
+   underline, and inherits the button focus ring. */
+.deck-toolbar a.btn-link { text-decoration: none; line-height: normal; }
+.deck-toolbar button:hover, .deck-toolbar a.btn-link:hover, #toc-dialog button:hover { background: var(--btn-bg-hover); }
+.deck-toolbar button:active, .deck-toolbar a.btn-link:active, #toc-dialog button:active { transform: translateY(1px); }
+/* Screen-reader-only text: extends a control's spoken label without adding
+   visible words to the toolbar. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
 }
-body.drawer-open #handle { left: min(19rem, calc(100vw - 3.25rem)); }
-/* Page-level dark-mode toggle: fixed top-right, always visible (like the
-   handle), a sun/moon ICON button with aria-pressed state (accessible name
-   on the button; the SVG is decorative). Opaque --btn-bg keeps it readable
-   over deck content. Rides above the scrim (like the handle) so the theme
-   stays reachable while the drawer is modal; the focus trap includes it.
-   Sized 2rem (32px) square — a comfortable touch target that reads as
-   sitting IN the deck's ~3.25rem (52px) toolbar band: top is set so the
-   button is vertically centered in that band when a deck is loaded, and
-   the same offset keeps it sensibly top-right in the index state. */
-#btn-themeflip {
-  position: fixed; top: 0.625rem; right: 1rem; z-index: 41;
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 2rem; height: 2rem; padding: 0;
-  box-shadow: var(--shadow-card);
+.deck-toolbar button[aria-pressed="true"] { background: var(--btn-bg-hover); }
+/* Slide counter: centered in the toolbar band (absolute so it centers on
+   the band width, not the space left of the buttons) — clears the shell's
+   top-right theme toggle in windowed presentation. Empty in reading mode,
+   so it has no visible effect there. */
+#slide-counter {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.82rem;
+  color: var(--btn-text);
+  font-variant-numeric: tabular-nums;
 }
-#btn-themeflip svg { width: 1rem; height: 1rem; }
-/* Show the moon in light mode (activating switches to dark) and the sun in
-   dark mode (activating switches to light) — the icon depicts the mode you
-   switch TO. Icon color is currentColor (= --btn-text on --btn-bg, the
-   already-vetted pill pair, which clears the 3:1 non-text floor). */
-.icon-sun { display: none; }
-.icon-moon { display: block; }
-html[data-theme="dark"] .icon-sun { display: block; }
-html[data-theme="dark"] .icon-moon { display: none; }
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme="light"]) .icon-sun { display: block; }
-  html:not([data-theme="light"]) .icon-moon { display: none; }
-}
-/* Compact index content: plain small-caps chapter headings (nothing to
-   collapse — the drawer itself is the show/hide), one-line deck rows. */
-.chap-label {
-  margin: 0.9rem 0 0.15rem;
-  padding: 0 1rem;
-  font-family: var(--font-body);
-  font-size: 0.78rem; font-weight: 700;
-  letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--text-secondary);
-}
-.deck-list { list-style: none; margin: 0; padding: 0; }
-.deck-list a {
-  display: block;
-  padding: 0.4rem 1rem 0.4rem 1.3rem;
-  color: var(--link); font-weight: 600; font-size: 0.95rem;
-  text-decoration: none;
-  border-left: 4px solid transparent;
-}
-.deck-list a:hover { background: var(--btn-bg-hover); text-decoration: underline; }
-.deck-list a[aria-current="page"] {
-  border-left-color: var(--accent, var(--heading));
-  background: var(--accent-soft);
-}
-:is(a, summary, button, [tabindex]):focus-visible {
+:is(a, button, summary, [tabindex]):focus-visible {
   outline: 3px solid var(--focus); outline-offset: 2px;
 }
-#drawer a:focus-visible { outline-offset: -3px; }
+
+/* --- Table of contents (native dialog; keyboard-reachable) --- */
+#toc-dialog {
+  border: 1px solid var(--card-border, var(--rule));
+  border-radius: var(--card-radius, 14px);
+  background: var(--bg-slide);
+  color: var(--text-primary);
+  padding: 1.4rem 1.6rem;
+  width: min(22rem, 90vw);
+  box-shadow: var(--shadow-card, 0 8px 24px rgba(0, 0, 0, 0.08));
+}
+#toc-dialog::backdrop { background: rgba(12, 9, 7, 0.5); }
+#toc-dialog h2 {
+  font-family: var(--font-display);
+  color: var(--heading);
+  font-size: 1.15rem;
+  margin: 0 0 0.75rem;
+}
+#toc-dialog ol { list-style: none; margin: 0 0 1rem; padding: 0; }
+#toc-dialog li { margin: 0; }
+#toc-dialog a {
+  display: block;
+  color: var(--link);
+  text-decoration: none;
+  padding: 0.42rem 0.65rem;
+  border-radius: 8px;
+}
+#toc-dialog a:hover, #toc-dialog a:focus-visible {
+  background: var(--btn-bg-hover);
+  text-decoration: underline;
+}
+
+/* --- Presentation mode: adaptive stage, container-query typography ---
+   The stage fills the viewport below the toolbar, its shape CLAMPED between
+   4:3 and 16:9. Why: the instructor presents iPad -> AirServer mirror ->
+   projector/recording; a locked 16:9 stage would bake letterbox bars into
+   the iPad frame (the captured source). Viewport shapes within the clamp
+   fill completely (no bars); wider than 16:9 pillarboxes at 16:9, squarer
+   than 4:3 letterboxes at 4:3, centered either way. Typography stays in
+   cqw (width-based), so a slide that fits at 16:9 only gains vertical room
+   at squarer shapes — 16:9 remains the authoring/verification worst case. */
+body.mode-present { overflow: hidden; }
+body.mode-present .stage-wrap {
+  --avail-h: calc(100vh - var(--toolbar-h, 3.25rem));
+  padding: 0;
+  height: var(--avail-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* ONE type scale for every slide (2.55cqw body). Never add a per-slide or
+   per-deck downscale: if content overflows the stage, restructure or split
+   the slide (SKILL.md overflow policy) — type size is not a pressure valve. */
+body.mode-present .slide {
+  display: none;
+  border: 0; border-radius: 0; box-shadow: none;
+  max-width: none; margin: 0;
+  font-size: 2.55cqw; line-height: 1.5;
+}
+body.mode-present .slide.active {
+  position: relative;
+  display: flex; flex-direction: column;
+  width: 100%; height: 100%;
+  padding: 8.5cqh 6cqw 8cqh; /* top clears the pinned header band */
+  overflow-y: auto; /* guard: an overfull slide scrolls instead of clipping */
+}
+/* Guard integrity: flex children must never silently compress — a scroll
+   container as a flex item would clip instead of overflowing the slide,
+   hiding real overflow from the scroll-guard check. */
+body.mode-present .slide.active > * { flex-shrink: 0; }
+/* Restrained accent anchoring the bottom edge of the projected slide */
+body.mode-present .slide.active::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1.2cqh;
+  background: var(--accent, var(--heading));
+}
+.stage { display: none; }
+body.mode-present .stage {
+  display: block;
+  container-type: size;
+  width: min(100vw, calc(var(--avail-h) * 16 / 9)); /* clamp: never wider than 16:9 */
+  height: min(var(--avail-h), calc(100vw * 3 / 4)); /* clamp: never squarer than 4:3 */
+  background: var(--bg-slide);
+  box-shadow: var(--shadow-card, 0 8px 24px rgba(0, 0, 0, 0.08));
+}
+body.mode-present .slide h1 { font-size: 7.5cqw; margin-bottom: 3cqh; }
+body.mode-present .slide h2 { font-size: 5cqw; margin-bottom: 3cqh; }
+body.mode-present .slide h2::after { width: 9cqw; height: 1cqh; margin-top: 1.8cqh; }
+body.mode-present .slide p { margin: 1.3cqh 0; }
+body.mode-present .slide ul, body.mode-present .slide ol { margin: 1.3cqh 0; padding-left: 3.4cqw; }
+body.mode-present .slide li { margin: 1.3cqh 0; }
+body.mode-present .slide-kicker { font-size: 1.7cqw; letter-spacing: 0.16em; margin: 0 0 2cqh; }
+/* Header band: pinned across the top of the stage on EVERY non-title slide
+   (instructor rule) — identical position and size regardless of slide type,
+   including centered question slides. Title slide keeps its flow kicker. */
+body.mode-present .slide-course { font-size: 1.7cqw; letter-spacing: 0.16em; }
+body.mode-present .slide.active .slide-band {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 1.5cqh 6cqw;
+  border-radius: 0;
+  z-index: 1;
+}
+body.mode-present .slide .slide-band p { margin: 0; }
+body.mode-present .slide-title.active { justify-content: center; }
+body.mode-present .slide-title h1 { font-size: 8cqw; }
+body.mode-present .slide-title h1::after { width: 12cqw; height: 1.2cqh; margin-top: 2.4cqh; }
+body.mode-present .slide-subtitle { font-size: 3.2cqw; margin: 0 0 3cqh; }
+body.mode-present .slide-meta { font-size: 1.7cqw; letter-spacing: 0.16em; }
+body.mode-present .callout {
+  padding: 2.2cqh 2.4cqw;
+  margin: 2.6cqh 0;
+  border-left-width: 0.7cqw;
+  border-radius: 0 1.4cqw 1.4cqw 0;
+}
+body.mode-present .callout-label { font-size: 2cqw; margin-bottom: 1cqh; }
+/* Component callouts keep their em-based notes anatomy on the stage (the
+   generic .callout stage overrides above must not distort it); vertical
+   padding tightens slightly for stage fit — proportions otherwise match
+   the notes. */
+body.mode-present :is(.callout-lt, .callout-definition, .callout-warning) {
+  padding: 1em 1.2em 0.85em;
+  margin: 1.4em 0 0.6em;
+  border-width: 0.125em;
+  border-radius: 6px;
+}
+body.mode-present :is(.callout-lt, .callout-definition, .callout-warning) > .callout-label {
+  font-size: 0.85em;
+  margin: 0;
+}
+body.mode-present :is(.callout-theorem, .callout-procedure) {
+  padding: 0.7em 1.2em 0.7em 1.5em;
+  margin: 0.6em 0;
+  border-left-width: 0.1875em;
+  border-radius: 0;
+}
+body.mode-present :is(.callout-theorem, .callout-procedure) > .callout-label {
+  font-size: 1em;
+  margin: 0 0 0.4em;
+}
+body.mode-present .callout-youtry {
+  padding: 0.7em 1em;
+  margin: 0.5em 0;
+  border-left-width: 0.25em;
+  border-radius: 0 4px 4px 0;
+}
+body.mode-present .callout-youtry > .callout-label { font-size: 1em; margin: 0 0 0.35em; }
+body.mode-present .callout-example {
+  padding: 0.7em 1.2em;
+  margin: 0.5em 0;
+  border-width: 0.0625em;
+  border-radius: 0;
+}
+body.mode-present .callout-example > .callout-label { font-size: 1em; margin: 0 0 0.35em; }
+body.mode-present .slide-question.active { justify-content: center; align-items: center; }
+body.mode-present .slide-question .prompt { font-size: 4.4cqw; margin: 2.5cqh auto; }
+body.mode-present .slide-section-mark {
+  font-size: 6.5cqw;
+  margin-bottom: 1.5cqh;
+  align-self: flex-start; /* a flex item would otherwise stretch full-width */
+}
+body.mode-present .slide-motif {
+  display: block;
+  position: absolute;
+  right: 4cqw; bottom: 7cqh;
+  font-size: 17cqw;
+  line-height: 1;
+  color: var(--accent, var(--heading));
+  opacity: 0.14;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+/* Two-column arrangement for the stage only (reading mode keeps the
+   single-column document flow). */
+body.mode-present .cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 4cqw;
+  align-items: start;
+  min-height: 0;
+}
+body.mode-present mjx-container[display="true"] { margin: 0.5em 0; }
+
+/* Dynamic reveals: [data-reveal] steps stay hidden on the stage until
+   revealed (DeckController also stamps aria-hidden, so unrevealed steps are
+   hidden from assistive tech too). Reading mode always shows everything.
+   visibility (not display) keeps layout stable while steps appear; the
+   opacity transition is killed by the reduced-motion rule below, making
+   reveals instant under prefers-reduced-motion. */
+body.mode-present [data-reveal] {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+body.mode-present [data-reveal].revealed {
+  visibility: visible;
+  opacity: 1;
+}
+/* A table whose rows are reveal steps stays FULLY invisible (headers,
+   dividers, all) until its first row is revealed — no empty ruled
+   skeleton on the stage before the reveal sequence starts. */
+body.mode-present :is(table, .table-wrap):has([data-reveal]):not(:has([data-reveal].revealed)) {
+  visibility: hidden;
+}
+
+/* --- Math (generation-time SVG; assistive MathML is inside each mjx-container) --- */
+mjx-container svg { max-width: 100%; }
+mjx-container[display="true"] {
+  display: block;
+  margin: 1.3em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.15em 0;
+}
+
+/* --- Motion --- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* --- Print fallback (reading mode prints as a document) --- */
+@media print {
+  .deck-toolbar { display: none; }
+  .slide { box-shadow: none; }
+}
+/* 3) DECK BLOCK  — deck-specific layout tweaks only; no new colors      */
+/* 3) DECK BLOCK — Math 11 §1.3 Levels of Measurement.
+   Layout only; every color is a theme custom property. ONE type scale
+   (deck-base.css): density is handled by layout, never by shrinking type. */
+
+/* Summary table (Table 1.3.6) — pattern carried from the Math 10A §1.2 deck.
+   Never wider than the reading column; scrolls inside its own wrapper. */
+.table-wrap { max-width: 100%; overflow-x: auto; }
+.deck-table { border-collapse: separate; border-spacing: 0; margin: 0.85rem auto; }
+.deck-table th, .deck-table td {
+  padding: 0.35rem 0.9rem;
+  text-align: center;
+  border-bottom: 1px solid var(--rule);
+}
+.deck-table thead th { border-bottom: 2px solid var(--heading); }
+/* Label columns read left-aligned; the yes/no columns stay centered */
+.deck-table th.rowlab, .deck-table td.rowlab { text-align: left; }
+body.mode-present .table-wrap { overflow-x: visible; }
+body.mode-present .deck-table { margin: 0.4cqh auto; }
+body.mode-present .deck-table th, body.mode-present .deck-table td {
+  padding: 0.55cqh 1.5cqw;
+  line-height: 1.3;
+}
+
+.nowrap { white-space: nowrap; }
+
+/* ---- Figure 1.3.5, rebuilt as deck markup -------------------------------
+   The notes' TikZ pyramid, redrawn from theme custom properties so it is
+   dark-mode safe and reveals one level at a time. Every rule is written at
+   `.pyramid.pyramid` specificity: `body.mode-present .slide li` and
+   `.slide ol` in the base block are (0,2,1) and would otherwise outrank a
+   single-class selector here (the same trap the §1.2 tree hit).
+
+   BELOW 46rem this is a plain stacked list — no trapezoids, no fixed
+   columns — so it reflows on a phone and at 200% zoom. */
+.slide .pyramid.pyramid ol { list-style: none; margin: 0.6rem 0; padding: 0; }
+.slide .pyramid.pyramid li { margin: 0.5em 0; }
+.slide .pyramid.pyramid .pyr-block { display: block; }
+.slide .pyramid.pyramid .pyr-name {
+  display: block;
+  text-align: center;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 0.3em 0.5em;
+  background: var(--accent-soft);
+  color: var(--text-primary);
+  border: 0.06em solid var(--accent);
+  border-radius: 6px;
+}
+.slide .pyramid.pyramid .pyr-note { display: block; margin-top: 0.25em; }
+
+@media (min-width: 46rem) {
+  /* The pyramid proper. Rows are laid out bottom-to-top with
+     column-reverse: document order stays Nominal to Ratio — the notes' own
+     order, and the order the reveals follow — while the drawing puts Ratio
+     at the apex. */
+  .slide .pyramid.pyramid {
+    display: flex; justify-content: center; align-items: center;
+    flex-grow: 1;   /* fill the stage's free height, centered */
+  }
+  .slide .pyramid.pyramid ol {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 100%;
+    margin: 0;
+  }
+  .slide .pyramid.pyramid li {
+    display: flex;
+    align-items: center;
+    align-items: stretch;   /* trapezoids always meet, whatever the note's height */
+    gap: 1.2em;
+    margin: 0.25em 0;       /* the gap IS the seam between levels */
+  }
+  .slide .pyramid.pyramid .pyr-block {
+    flex: 0 0 50%;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    /* The edge is drawn here, on the UNCLIPPED parent: CSS applies filter
+       before clip-path, so a drop-shadow set on the trapezoid itself would
+       be clipped away. Without an edge the --accent-soft fill is nearly
+       invisible against --bg-slide in dark mode. */
+    filter: drop-shadow( 0.05em  0     0 var(--accent))
+            drop-shadow(-0.05em  0     0 var(--accent))
+            drop-shadow( 0      0.05em 0 var(--accent))
+            drop-shadow( 0     -0.05em 0 var(--accent));
+  }
+  /* Trapezoids. Each level's TOP edge is the width of the level above it,
+     so the sloped sides run unbroken from base to apex. */
+  .slide .pyramid.pyramid .pyr-name {
+    display: flex; align-items: center; justify-content: center;
+    border: 0 none;
+    border-radius: 0;
+    padding: 1.4cqh 0.4em;
+  }
+  .slide .pyramid.pyramid .pyr-1 .pyr-name { width: 100%; clip-path: polygon(11.0% 0, 89.0% 0, 100% 100%, 0 100%); }
+  .slide .pyramid.pyramid .pyr-2 .pyr-name { width:  78%; clip-path: polygon(14.1% 0, 85.9% 0, 100% 100%, 0 100%); }
+  .slide .pyramid.pyramid .pyr-3 .pyr-name { width:  56%; clip-path: polygon(19.6% 0, 80.4% 0, 100% 100%, 0 100%); }
+  .slide .pyramid.pyramid .pyr-4 .pyr-name { width:  34%; clip-path: polygon(20.6% 0, 79.4% 0, 100% 100%, 0 100%); }
+  .slide .pyramid.pyramid .pyr-note { flex: 1 1 auto; align-self: center; margin-top: 0; }
+}
 </style>
-</head>
-<body class="drawer-open">
-<!-- The handle comes FIRST in the DOM: from a loaded deck, one Shift+Tab
-     lands on it, and keyboard users entering the page meet it immediately;
-     the theme toggle is the very next tab stop. -->
-<button type="button" id="handle" aria-expanded="true" aria-controls="drawer">Index</button>
-<button type="button" id="btn-themeflip" aria-pressed="false" aria-label="Dark mode">
-  <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.6 14.5A8.6 8.6 0 0 1 9.5 3.4 9 9 0 1 0 20.6 14.5Z"/></svg>
-  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.4" fill="currentColor" stroke="none"/><path d="M12 2.2v2.6M12 19.2v2.6M2.2 12h2.6M19.2 12h2.6M5.1 5.1l1.8 1.8M17.1 17.1l1.8 1.8M18.9 5.1l-1.8 1.8M6.9 17.1l-1.8 1.8"/></svg>
-</button>
-<div id="welcome">
-  <div class="welcome-card">
-    <h1 id="shell-title" tabindex="-1">Math 11 Slide Decks</h1>
-    <p>Choose a deck from the index. The deck opens right here, and the Index tab on the left edge of the screen brings the list back at any time.</p>
-  </div>
+<style id="MJX-SVG-styles">
+mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+  min-height: 1px;
+  min-width: 1px;
+}
+
+mjx-container[jax="SVG"] > svg a {
+  fill: blue;
+  stroke: blue;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line], svg[data-table] > g > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame], svg[data-table] > g > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed, svg[data-table] > g > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted, svg[data-table] > g > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > g > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
+  stroke-width: 3;
+}
+</style></head>
+<body>
+<!-- sources:
+  courses/math-11/notes/SOURCE/01-03.ptx
+  courses/math-11/notes/planning/01-03-planning.md
+  courses/math-11/learning-targets/lt-02-levels-of-measurement/lt-02-header.ptx
+  courses/math-11/problems/01-introduction/01-03/pretext/you-try-1.3.1-levels-of-measurement-pretext-v1.md
+  concepts/statistics/nominal-level.md
+  concepts/statistics/ordinal-level.md
+  concepts/statistics/interval-level.md
+  concepts/statistics/ratio-level.md
+-->
+<div class="deck-toolbar">
+  <button id="btn-mode" aria-pressed="false">Present (P)</button>
+  <button id="btn-toc">Contents</button>
+  <button id="btn-themeflip" aria-pressed="false">Dark mode</button>
+  <a id="btn-pdf" class="btn-link" href="01-03-levels-of-measurement.pdf" download="">Download PDF<span class="sr-only"> handout of these slides. The web version you are reading is the accessible one.</span></a>
+  <span id="slide-counter" aria-live="polite"></span>
 </div>
-<div id="viewer" hidden></div>
-<div id="scrim" hidden></div>
-<div id="drawer" tabindex="-1" aria-label="Deck index">
-  <div class="drawer-head">
-    <span class="drawer-title">Math 11 Slide Decks</span>
-  </div>
-  <nav aria-label="Deck index">
-    <h2 class="chap-label">Course Information</h2>
-    <ul class="deck-list">
-      <li><a href="00-00-welcome-fall-2026.html" data-slug="00-00-welcome-fall-2026" data-title="Math 11 Day 1 — Welcome to Fall 2026">Day 1 — Welcome to Fall 2026</a></li>
+<dialog id="toc-dialog" aria-label="Table of contents">
+  <h2>Contents</h2>
+  <nav><ol id="toc-list"></ol></nav>
+  <button id="toc-close">Close</button>
+</dialog>
+<main class="stage-wrap">
+  <div class="stage" id="stage"><!-- in presentation mode, JS moves the
+       active slide's rendering here visually via body.mode-present rules;
+       slides stay in place in the DOM --></div>
+  <section class="slide slide-title" id="s1" aria-labelledby="s1-h" data-slide-id="title">
+    <p class="slide-kicker">Math 11 — Elementary Statistics</p>
+    <p class="slide-section-mark">§1.3</p>
+    <h1 id="s1-h">Levels of Measurement</h1>
+    <p class="slide-subtitle">Which operations on the data actually mean something</p>
+  </section>
+  <section class="slide" id="s2" aria-labelledby="s2-h" data-slide-id="todays-goal">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Objectives</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s2-h">Today’s Goal</h2>
+    <p>After completing this section, you should be able to:</p>
+    <ul>
+      <li>Identify the four levels of measurement: nominal, ordinal, interval, and ratio</li>
+      <li>Distinguish between each level of measurement</li>
+      <li>Determine the appropriate level of measurement for a given dataset</li>
     </ul>
-    <h2 class="chap-label">Chapter 1</h2>
-    <ul class="deck-list">
-      <li><a href="01-01-what-is-statistics.html" data-slug="01-01-what-is-statistics" data-title="Math 11 §1.1 — What is Statistics?">§1.1 What is Statistics?</a></li>
-      <li><a href="01-02-types-of-data.html" data-slug="01-02-types-of-data" data-title="Math 11 §1.2 — Types of Data">§1.2 Types of Data</a></li>
-      <li><a href="01-03-levels-of-measurement.html" data-slug="01-03-levels-of-measurement" data-title="Math 11 §1.3 — Levels of Measurement">§1.3 Levels of Measurement</a></li>
+  </section>
+  <section class="slide" id="s3" aria-labelledby="s3-h" data-slide-id="learning-target-2">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Learning Target</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s3-h">What You Will Be Graded On</h2>
+    <div class="callout callout-lt">
+      <span class="callout-label">LT.2 Levels of Measurement</span>
+      <p>I understand the four levels of measurements. I can use this understanding to identify what level of measurement is appropriate for a given data set and can also give examples of data sets for each level of measurement.</p>
+    </div>
+  </section>
+  <section class="slide slide-question" id="s4" aria-labelledby="s4-h" data-slide-id="which-can-you-average">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Think About It</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s4-h">Which of These Can You Average?</h2>
+    <p class="prompt">Eye color. Letter grades. Calendar years. Height.</p>
+    <p data-reveal="">Height, certainly. Calendar years, also yes. Letter grades, doubtful. Eye color, never.</p>
+    <p data-reveal="">The data type does not settle this. Something finer does.</p>
+  </section>
+  <section class="slide" id="s5" aria-labelledby="s5-h" data-slide-id="nominal-level">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Nominal Level</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s5-h">Names With No Order</h2>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.3.1</span>
+      <p>Data is at the <strong>nominal level</strong> of measurement if it consists of names, labels, or categories, and the data cannot be arranged in any meaningful order.</p>
+    </div>
+    <p data-reveal="">Eye color, gender, political party affiliation, and zip codes.</p>
+    <p data-reveal="">All you can ask of two values is whether they are the same or different.</p>
+  </section>
+  <section class="slide" id="s6" aria-labelledby="s6-h" data-slide-id="ordinal-level">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Ordinal Level</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s6-h">Order, But No Measurable Gaps</h2>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.3.2</span>
+      <p>Data is at the <strong>ordinal level</strong> of measurement if it can be arranged in a meaningful order, but differences (obtained by subtraction) between data values either cannot be determined or are meaningless.</p>
+    </div>
+    <p data-reveal="">Rankings, letter grades, and survey scales from strongly agree to strongly disagree.</p>
+  </section>
+  <section class="slide" id="s7" aria-labelledby="s7-h" data-slide-id="interval-level">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Interval Level</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s7-h">Gaps That Mean Something</h2>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.3.3</span>
+      <p>Data is at the <strong>interval level</strong> of measurement if it can be arranged in a meaningful order, differences between data values are meaningful, but there is no natural zero point (a value of zero does not indicate the absence of the quantity).</p>
+    </div>
+    <p data-reveal="">Temperature in Fahrenheit or Celsius, calendar years, and IQ scores.</p>
+  </section>
+  <section class="slide" id="s8" aria-labelledby="s8-h" data-slide-id="ratio-level">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Ratio Level</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s8-h">A Zero That Means None</h2>
+    <div class="callout callout-definition">
+      <span class="callout-label">Definition 1.3.4</span>
+      <p>Data is at the <strong>ratio level</strong> of measurement if it can be arranged in a meaningful order, differences between data values are meaningful, and there is a natural zero point (a value of zero indicates the absence of the quantity).</p>
+    </div>
+    <p data-reveal="">Height, weight, age, income, and distance.</p>
+  </section>
+  <section class="slide" id="s9" aria-labelledby="s9-h" data-slide-id="levels-pyramid">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 The Hierarchy</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s9-h">Each Level Adds One Thing</h2>
+    <div class="pyramid">
+      <ol class="pyr">
+        <li data-reveal="" class="pyr-1"><span class="pyr-block"><span class="pyr-name">Nominal</span></span><span class="pyr-note">Categories only <span class="nowrap">(<mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.186ex;" xmlns="http://www.w3.org/2000/svg" width="1.76ex" height="1.505ex" role="img" focusable="false" viewBox="0 -583 778 665" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-1-TEX-N-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="3D" xlink:href="#MJX-1-TEX-N-3D"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>=</mo></math></mjx-assistive-mml></mjx-container> or <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.486ex;" xmlns="http://www.w3.org/2000/svg" width="1.76ex" height="2.106ex" role="img" focusable="false" viewBox="0 -716 778 931" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-2-TEX-N-2260" d="M166 -215T159 -215T147 -212T141 -204T139 -197Q139 -190 144 -183L306 133H70Q56 140 56 153Q56 168 72 173H327L406 327H72Q56 332 56 347Q56 360 70 367H426Q597 702 602 707Q605 716 618 716Q625 716 630 712T636 703T638 696Q638 692 471 367H707Q722 359 722 347Q722 336 708 328L451 327L371 173H708Q722 163 722 153Q722 140 707 133H351Q175 -210 170 -212Q166 -215 159 -215Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="2260" xlink:href="#MJX-2-TEX-N-2260"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>≠</mo></math></mjx-assistive-mml></mjx-container>)</span></span></li>
+        <li data-reveal="" class="pyr-2"><span class="pyr-block"><span class="pyr-name">Ordinal</span></span><span class="pyr-note">Adds meaningful order <span class="nowrap">(<mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.09ex;" xmlns="http://www.w3.org/2000/svg" width="1.76ex" height="1.312ex" role="img" focusable="false" viewBox="0 -540 778 580" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-3-TEX-N-3C" d="M694 -11T694 -19T688 -33T678 -40Q671 -40 524 29T234 166L90 235Q83 240 83 250Q83 261 91 266Q664 540 678 540Q681 540 687 534T694 519T687 505Q686 504 417 376L151 250L417 124Q686 -4 687 -5Q694 -11 694 -19Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="3C" xlink:href="#MJX-3-TEX-N-3C"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>&lt;</mo></math></mjx-assistive-mml></mjx-container> or <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.09ex;" xmlns="http://www.w3.org/2000/svg" width="1.76ex" height="1.312ex" role="img" focusable="false" viewBox="0 -540 778 580" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-4-TEX-N-3E" d="M84 520Q84 528 88 533T96 539L99 540Q106 540 253 471T544 334L687 265Q694 260 694 250T687 235Q685 233 395 96L107 -40H101Q83 -38 83 -20Q83 -19 83 -17Q82 -10 98 -1Q117 9 248 71Q326 108 378 132L626 250L378 368Q90 504 86 509Q84 513 84 520Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="3E" xlink:href="#MJX-4-TEX-N-3E"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>&gt;</mo></math></mjx-assistive-mml></mjx-container>)</span></span></li>
+        <li data-reveal="" class="pyr-3"><span class="pyr-block"><span class="pyr-name">Interval</span></span><span class="pyr-note">Adds meaningful differences (subtraction)</span></li>
+        <li data-reveal="" class="pyr-4"><span class="pyr-block"><span class="pyr-name">Ratio</span></span><span class="pyr-note">Adds a true zero and meaningful ratios <span class="nowrap">(<mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: 0.02ex;" xmlns="http://www.w3.org/2000/svg" width="1.76ex" height="1.09ex" role="img" focusable="false" viewBox="0 -491 778 482" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-5-TEX-N-D7" d="M630 29Q630 9 609 9Q604 9 587 25T493 118L389 222L284 117Q178 13 175 11Q171 9 168 9Q160 9 154 15T147 29Q147 36 161 51T255 146L359 250L255 354Q174 435 161 449T147 471Q147 480 153 485T168 490Q173 490 175 489Q178 487 284 383L389 278L493 382Q570 459 587 475T609 491Q630 491 630 471Q630 464 620 453T522 355L418 250L522 145Q606 61 618 48T630 29Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="D7" xlink:href="#MJX-5-TEX-N-D7"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>×</mo></math></mjx-assistive-mml></mjx-container> or <mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg style="vertical-align: -0.081ex;" xmlns="http://www.w3.org/2000/svg" width="1.76ex" height="1.296ex" role="img" focusable="false" viewBox="0 -537 778 573" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><defs><path id="MJX-6-TEX-N-F7" d="M318 466Q318 500 339 518T386 537Q418 537 438 517T458 466Q458 438 440 417T388 396Q355 396 337 417T318 466ZM56 237T56 250T70 270H706Q721 262 721 250T706 230H70Q56 237 56 250ZM318 34Q318 68 339 86T386 105Q418 105 438 85T458 34Q458 6 440 -15T388 -36Q355 -36 337 -15T318 34Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><use data-c="F7" xlink:href="#MJX-6-TEX-N-F7"></use></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>÷</mo></math></mjx-assistive-mml></mjx-container>)</span></span></li>
+      </ol>
+    </div>
+  </section>
+  <section class="slide" id="s10" aria-labelledby="s10-h" data-slide-id="summary-table">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Summary</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s10-h">The Four Levels Side by Side</h2>
+    <div class="table-wrap">
+      <table class="deck-table">
+        <caption class="sr-only">Table 1.3.6. Summary of the Four Levels of Measurement.</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="rowlab">Level</th>
+            <th scope="col">Order?</th>
+            <th scope="col">Differences?</th>
+            <th scope="col">True Zero?</th>
+            <th scope="col">Ratios?</th>
+            <th scope="col" class="rowlab">Examples</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-reveal=""><th scope="row" class="rowlab">Nominal</th><td>No</td><td>No</td><td>No</td><td>No</td><td class="rowlab">Eye color, zip codes, SSN</td></tr>
+          <tr data-reveal=""><th scope="row" class="rowlab">Ordinal</th><td>Yes</td><td>No</td><td>No</td><td>No</td><td class="rowlab">Rankings, letter grades</td></tr>
+          <tr data-reveal=""><th scope="row" class="rowlab">Interval</th><td>Yes</td><td>Yes</td><td>No</td><td>No</td><td class="rowlab">Temperature (°F), years</td></tr>
+          <tr data-reveal=""><th scope="row" class="rowlab">Ratio</th><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td class="rowlab">Height, weight, age, income</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="slide slide-question" id="s11" aria-labelledby="s11-h" data-slide-id="is-ninety-twice-as-warm">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Think About It</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s11-h">Is 90°F Twice as Warm as 45°F?</h2>
+    <p class="prompt">The numbers say one is twice the other. Does the weather?</p>
+    <p data-reveal="">It does not. Interval and ratio are the two levels students mix up, and this is where they come apart.</p>
+    <p data-reveal="">Two tests settle it, and they always agree.</p>
+  </section>
+  <section class="slide" id="s12" aria-labelledby="s12-h" data-slide-id="two-tests">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Interval or Ratio</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s12-h">Two Tests That Always Agree</h2>
+    <p><strong>Ratio Test.</strong> Does it make sense to say one value is “twice as much” as another?</p>
+    <ul>
+      <li data-reveal="">If yes, the data is at the <strong>ratio</strong> level.</li>
+      <li data-reveal="">If no, the data is at the <strong>interval</strong> level.</li>
     </ul>
-  </nav>
-</div>
+    <p data-reveal=""><strong>True Zero Test.</strong> Does a value of zero indicate the complete absence of the quantity?</p>
+    <ul>
+      <li data-reveal="">If yes, the data is at the <strong>ratio</strong> level.</li>
+      <li data-reveal="">If no, the data is at the <strong>interval</strong> level.</li>
+    </ul>
+  </section>
+  <section class="slide" id="s13" aria-labelledby="s13-h" data-example="1" data-slide-id="fahrenheit-ratio-test">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Example 1</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s13-h">Putting Fahrenheit Through the First Test</h2>
+    <p>Yesterday in Fresno the low was 45°F and the high was 90°F.</p>
+    <p><strong>Ratio Test.</strong> Was the afternoon twice as hot as the morning?</p>
+    <p data-reveal="">The same low and high in Celsius: 7.2°C and 32.2°C — about 4.5 to 1, not 2 to 1.</p>
+    <p data-reveal="">Two scales, two different ratios for the same two moments. A real doubling could not depend on which scale you wrote it in. Something is wrong with the scale itself — and the second test says what.</p>
+  </section>
+  <section class="slide" id="s14" aria-labelledby="s14-h" data-example="1, continued" data-slide-id="fahrenheit-true-zero">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Example 1, continued</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s14-h">And Through the Second Test</h2>
+    <p><strong>True Zero Test.</strong> Does 0°F mean there is no temperature, no heat at all?</p>
+    <p data-reveal="">No. 0°F is just another point on the scale. It is a cold day, not the absence of heat.</p>
+    <p data-reveal="">Both tests agree: temperature in Fahrenheit is at the <strong>interval level</strong>.</p>
+    <p data-reveal="">Kelvin is the exception. 0 K is absolute zero, the complete absence of thermal energy, so Kelvin is at the <strong>ratio level</strong>.</p>
+  </section>
+  <section class="slide" id="s15" aria-labelledby="s15-h" data-example="2" data-slide-id="naming-the-level-ab">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Example 2</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s15-h">Naming the Level, Part One</h2>
+    <p>For each of the following, determine which of the four levels of measurement best describes the data.</p>
+    <ol>
+      <li>A campus survey records the home county of each new student. <span data-reveal=""><strong>Nominal.</strong> Counties are categories with no meaningful order.</span></li>
+      <li>A restaurant asks each diner to rate the service as Poor, Fair, Good, or Excellent. <span data-reveal=""><strong>Ordinal.</strong> The ratings can be ordered, but the gap from Poor to Fair need not match the gap from Good to Excellent.</span></li>
+    </ol>
+  </section>
+  <section class="slide" id="s16" aria-labelledby="s16-h" data-example="2, continued" data-slide-id="naming-the-level-cd">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Example 2, continued</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s16-h">Naming the Level, Part Two</h2>
+    <ol start="3">
+      <li>A school psychologist records the IQ score of each student tested. <span data-reveal=""><strong>Interval.</strong> Scores can be ordered and differences are meaningful, but an IQ of 0 does not mean no intelligence, so 140 is not twice 70.</span></li>
+      <li>A delivery company records the weight of each package, in pounds. <span data-reveal=""><strong>Ratio.</strong> A weight of 0 pounds means no weight at all, so a 10 pound package really is twice a 5 pound package.</span></li>
+    </ol>
+  </section>
+  <section class="slide slide-question" id="s17" aria-labelledby="s17-h" data-slide-id="numbers-that-are-labels">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Think About It</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s17-h">Numbers That Are Not Numbers</h2>
+    <p class="prompt">One player wears jersey number 23. A teammate wears 46. Is 46 twice 23 in any useful sense?</p>
+    <p data-reveal="">No. The numbers name players. That makes them nominal, however they are written.</p>
+  </section>
+  <section class="slide" id="s18" aria-labelledby="s18-h" data-slide-id="you-try-levels-of-measurement">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 Practice</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s18-h">Now You Try: Name the Level</h2>
+    <div class="callout callout-youtry">
+      <p class="callout-label lead-label">You Try 1.3.1.</p>
+      <p class="lead-in">For each of the following, determine which of the four levels of measurement best describes the data.</p>
+      <ol>
+        <li>A hospital records the resting heart rate of every patient admitted. <span data-reveal=""><strong>Ratio.</strong></span></li>
+        <li>A bank records the Social Security number of each new account holder. <span data-reveal=""><strong>Nominal</strong> — digits, but only a label.</span></li>
+        <li>A student consults published rankings of medical schools. <span data-reveal=""><strong>Ordinal.</strong></span></li>
+        <li>The number of hours each employee worked last week. <span data-reveal=""><strong>Ratio.</strong></span></li>
+      </ol>
+    </div>
+  </section>
+  <section class="slide" id="s19" aria-labelledby="s19-h" data-slide-id="averaging-a-survey-scale">
+    <div class="slide-band">
+      <p class="slide-kicker">§1.3 One Last Caution</p>
+      <p class="slide-course">MATH 11</p>
+    </div>
+    <h2 id="s19-h">Averaging a Survey Scale</h2>
+    <p>Survey scales from 1 to 5 get added and averaged all the time. You will see it in reports, in product reviews, and in course evaluations.</p>
+    <p data-reveal="">At the ordinal level, that arithmetic is not strictly proper. The gap from 1 to 2 need not equal the gap from 4 to 5.</p>
+    <p data-reveal="">The practice is common. Knowing why it is questionable is the point of this section.</p>
+  </section>
+</main>
 <script>
+/* === DeckController ===
+   Owns all interactive behavior for a generated deck: mode switching,
+   presentation-mode navigation, the table of contents, the dark-mode
+   toggle, and a lightweight edit/save mode. No external requests. */
 (function () {
   'use strict';
-  /* === Shell controller ===
-     Hash routing: index.html#<deck-basename> selects a deck; the bare URL
-     is the index state. Back/forward walk the history; refresh keeps the
-     selection; an unknown hash falls back to the index (no error page).
-     The shell never reaches into the frame's DOM — it only sets iframe.src
-     and posts the theme via postMessage. */
-  var drawer   = document.getElementById('drawer');
-  var scrim    = document.getElementById('scrim');
-  var handle   = document.getElementById('handle');
-  var btnTheme = document.getElementById('btn-themeflip');
-  var viewer   = document.getElementById('viewer');
-  var welcome  = document.getElementById('welcome');
-  var heading  = document.getElementById('shell-title');
-  var indexTitle = document.title;
 
-  /* Deck map from the drawer's own links (single source: the markup). */
-  var decks = {};
-  var links = Array.prototype.slice.call(drawer.querySelectorAll('a[data-slug]'));
-  links.forEach(function (a) {
-    decks[a.getAttribute('data-slug')] = {
-      file: a.getAttribute('href'),
-      title: a.getAttribute('data-title')
-    };
-  });
+  var btnMode   = document.getElementById('btn-mode');
+  var btnToc    = document.getElementById('btn-toc');
+  var btnTheme  = document.getElementById('btn-themeflip');
+  var counter   = document.getElementById('slide-counter');
+  var tocDialog = document.getElementById('toc-dialog');
+  var tocList   = document.getElementById('toc-list');
+  var tocClose  = document.getElementById('toc-close');
+  var stage     = document.getElementById('stage');
+  var stageWrap = document.querySelector('.stage-wrap');
 
-  var frame = null;
+  // Slide order is fixed at load time (document order = reading order).
+  var slides   = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var slideIds = slides.map(function (s) { return s.id; });
 
-  function deckLoaded() { return !viewer.hidden; }
-  function drawerOpen() { return document.body.classList.contains('drawer-open'); }
+  var presenting = false;
+  var editMode   = false;
+  // Initial slide comes from a #sN deep link, defaulting to the first slide.
+  var currentIndex = Math.max(0, slideIds.indexOf(location.hash.slice(1)));
 
-  /* Over a loaded deck the drawer is a modal dialog (scrim + trap + Esc).
-     On the bare URL it is plain open content — no dialog role, no scrim. */
-  function setDrawer(open, moveFocus) {
-    document.body.classList.toggle('drawer-open', open);
-    /* inert removes the closed drawer from tab order and the accessibility
-       tree immediately (the CSS visibility flip waits for the slide-out). */
-    drawer.inert = !open;
-    handle.setAttribute('aria-expanded', String(open));
-    handle.textContent = open ? 'Close' : 'Index';
-    var modal = open && deckLoaded();
-    if (modal) {
-      drawer.setAttribute('role', 'dialog');
-      drawer.setAttribute('aria-modal', 'true');
-      scrim.hidden = false;
-    } else {
-      drawer.removeAttribute('role');
-      drawer.removeAttribute('aria-modal');
-      scrim.hidden = true;
-    }
-    /* Modal containment: the deck iframe sits between the toggle and the
-       drawer in tab order, so without this a Tab from the toggle would land
-       IN the iframe — under the scrim, in content aria-modal tells assistive
-       tech to ignore. inert pulls the whole frame out of tab order and the
-       a11y tree while the drawer is modal; cleared in every non-modal state
-       (index state, or drawer closed) so the deck stays operable. */
-    if (frame) frame.inert = modal;
-    if (open && moveFocus) drawer.focus();
-    if (!open && moveFocus) handle.focus();
-  }
-  handle.addEventListener('click', function () { setDrawer(!drawerOpen(), true); });
-  scrim.addEventListener('click', function () { setDrawer(false, true); });
-
-  function markCurrent(slug) {
-    links.forEach(function (a) {
-      if (a.getAttribute('data-slug') === slug) a.setAttribute('aria-current', 'page');
-      else a.removeAttribute('aria-current');
-    });
-  }
-
-  function showDeck(slug) {
-    var deck = decks[slug];
-    welcome.hidden = true;
-    viewer.hidden = false;
-    setDrawer(false, false);
-    markCurrent(slug);
-    document.title = deck.title;
-    if (!frame || frame.getAttribute('data-slug') !== slug) {
-      /* Fresh iframe per deck: setting src on an existing iframe would push
-         its own entry into the session history and break Back. */
-      if (frame) frame.remove();
-      frame = document.createElement('iframe');
-      frame.setAttribute('title', deck.title);
-      frame.setAttribute('data-slug', slug);
-      frame.setAttribute('allowfullscreen', '');
-      frame.setAttribute('allow', 'fullscreen');
-      frame.addEventListener('load', postTheme); /* deck obeys the shell's theme from first paint */
-      frame.src = deck.file;
-      viewer.appendChild(frame);
-    }
-    frame.focus(); /* land keyboard/SR users on the deck */
-  }
-
-  function showIndex(moveFocus) {
-    var wasDeck = deckLoaded();
-    viewer.hidden = true;
-    welcome.hidden = false;
-    if (frame) { frame.remove(); frame = null; }
-    markCurrent(null);
-    document.title = indexTitle;
-    setDrawer(true, false);
-    if (moveFocus && wasDeck) heading.focus();
-  }
-
-  function route(initial) {
-    var slug = location.hash.slice(1);
-    if (decks[slug]) showDeck(slug);
-    else showIndex(!initial);
-  }
-  window.addEventListener('hashchange', function () { route(false); });
-
-  /* Deck links: route through the shell's hash. Modified clicks (new tab,
-     etc.) keep the default behavior — the href is the standalone deck. */
-  links.forEach(function (a) {
+  // --- Table of contents: built once from slide headings --------------
+  slides.forEach(function (slide, i) {
+    var heading = slide.querySelector('h1, h2');
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + slide.id;
+    var tocLabel = (i + 1) + '. ' + (heading ? heading.textContent : slide.id);
+    // Example slides announce their deck-local example designation in the
+    // Contents list: data-example on the <section> (e.g. "2" or
+    // "2, continued") appends " — Example 2" etc. Part of the link TEXT,
+    // so the signal is never color-only.
+    var exampleNo = slide.getAttribute('data-example');
+    if (exampleNo) tocLabel += ' — Example ' + exampleNo;
+    a.textContent = tocLabel;
     a.addEventListener('click', function (e) {
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-      e.preventDefault();
-      var slug = a.getAttribute('data-slug');
-      if (location.hash === '#' + slug) {
-        setDrawer(false, false); /* same deck re-picked: no hashchange fires */
-        if (frame) frame.focus();
-      } else {
-        location.hash = slug;
-      }
+      if (presenting) { e.preventDefault(); activateSlide(i); }
+      tocDialog.close(); // in reading mode the default anchor jump still runs
     });
+    li.appendChild(a);
+    tocList.appendChild(li);
+  });
+  function openToc() { if (!tocDialog.open) tocDialog.showModal(); }
+  btnToc.addEventListener('click', openToc);
+  tocClose.addEventListener('click', function () { tocDialog.close(); });
+  // Light dismiss: a click on the backdrop (outside the dialog's own box)
+  // closes the Contents modal — an ADDITIONAL path alongside the Close
+  // button and Esc. A click anywhere INSIDE the panel (content or its
+  // padding) is inside the box and never closes it. Native <dialog>
+  // restores focus to the opener on close, so focus-return still holds.
+  tocDialog.addEventListener('click', function (e) {
+    var r = tocDialog.getBoundingClientRect();
+    var inside = e.clientX >= r.left && e.clientX <= r.right &&
+                 e.clientY >= r.top && e.clientY <= r.bottom;
+    if (!inside) tocDialog.close();
   });
 
-  /* Esc closes the drawer over a deck; Tab is trapped while it is modal.
-     The trap covers everything operable above the scrim, in DOM/tab order:
-     the handle (the labeled close affordance — its label reads "Close" while
-     open), the theme toggle, then the drawer's nav links. There is no
-     in-drawer close button; the handle closes the drawer. */
-  document.addEventListener('keydown', function (e) {
-    if (!(drawerOpen() && deckLoaded())) return;
-    if (e.key === 'Escape') { e.preventDefault(); setDrawer(false, true); return; }
-    if (e.key !== 'Tab') return;
-    var focusables = [handle, btnTheme].concat(Array.prototype.slice.call(
-      drawer.querySelectorAll('a[href], button:not([hidden])')
-    )).filter(function (el) { return el.getClientRects().length > 0; });
-    if (!focusables.length) return;
-    var first = focusables[0], last = focusables[focusables.length - 1];
-    if (e.shiftKey && (document.activeElement === first || document.activeElement === drawer)) {
-      e.preventDefault(); last.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault(); first.focus();
+  // --- Dynamic reveals: [data-reveal] steps within a slide --------------
+  // Presentation mode only. Reading mode always shows everything (the WCAG
+  // reflow surface never hides content): reveal classes and aria-hidden are
+  // cleared whenever a slide returns to document flow.
+  function stepsOf(slide) {
+    return Array.prototype.slice.call(slide.querySelectorAll('[data-reveal]'));
+  }
+  function setStep(el, on) {
+    if (on) { el.classList.add('revealed'); el.removeAttribute('aria-hidden'); }
+    else { el.classList.remove('revealed'); el.setAttribute('aria-hidden', 'true'); }
+  }
+  function clearRevealState(slide) {
+    stepsOf(slide).forEach(function (el) {
+      el.classList.remove('revealed');
+      el.removeAttribute('aria-hidden');
+    });
+  }
+  function updateCounter() {
+    var text = 'Slide ' + (currentIndex + 1) + ' of ' + slides.length;
+    var steps = stepsOf(slides[currentIndex]);
+    if (steps.length) {
+      var shown = steps.filter(function (el) { return el.classList.contains('revealed'); }).length;
+      // No middot separator: it reads as multiplication in a math class.
+      text += ', step ' + shown + ' of ' + steps.length;
     }
-  });
+    counter.textContent = text;
+  }
 
-  /* Dark mode, page-level: stamp data-theme on <html> (the theme CSS has
-     both forced blocks) AND post the theme into the deck iframe, where the
-     DeckController applies it through the same data-theme path as its own
-     toggle. One-way: the deck never replies. The choice persists in
-     localStorage (guarded — file:// contexts may deny storage access). */
-  var THEME_KEY = 'accessible-slides-theme';
-  function readStoredTheme() {
-    try { return localStorage.getItem(THEME_KEY); } catch (err) { return null; }
+  // --- Presentation mode: move the active slide into #stage, and back -
+  function returnSlideToFlow(slide) {
+    clearRevealState(slide);
+    slide.classList.remove('active');
+    var nextId = slideIds[slideIds.indexOf(slide.id) + 1];
+    var nextEl = nextId ? document.getElementById(nextId) : null;
+    if (nextEl) stageWrap.insertBefore(slide, nextEl);
+    else stageWrap.appendChild(slide);
   }
-  function storeTheme(value) {
-    try { localStorage.setItem(THEME_KEY, value); } catch (err) { /* file:// quirk: no storage */ }
+  function activateSlide(index, revealAll) {
+    index = Math.max(0, Math.min(index, slides.length - 1));
+    var current = stage.querySelector('.slide.active');
+    if (current) returnSlideToFlow(current);
+    currentIndex = index;
+    var slide = slides[currentIndex];
+    stepsOf(slide).forEach(function (el) { setStep(el, !!revealAll); });
+    slide.classList.add('active');
+    stage.appendChild(slide);
+    updateCounter();
+    history.replaceState(null, '', '#' + slide.id);
   }
+  function goTo(index) {
+    index = Math.max(0, Math.min(index, slides.length - 1));
+    if (index !== currentIndex) activateSlide(index);
+  }
+  // Advance = reveal the next hidden step, else go to the next slide.
+  // Retreat = un-reveal the last revealed step, else go to the previous
+  // slide (arriving backward shows that slide fully revealed).
+  function advance() {
+    var steps = stepsOf(slides[currentIndex]);
+    for (var i = 0; i < steps.length; i++) {
+      if (!steps[i].classList.contains('revealed')) {
+        setStep(steps[i], true);
+        updateCounter();
+        return;
+      }
+    }
+    goTo(currentIndex + 1);
+  }
+  function retreat() {
+    var steps = stepsOf(slides[currentIndex]);
+    for (var i = steps.length - 1; i >= 0; i--) {
+      if (steps[i].classList.contains('revealed')) {
+        setStep(steps[i], false);
+        updateCounter();
+        return;
+      }
+    }
+    if (currentIndex > 0) activateSlide(currentIndex - 1, true);
+  }
+  function enterPresentMode() {
+    presenting = true;
+    document.body.classList.add('mode-present');
+    btnMode.setAttribute('aria-pressed', 'true');
+    btnMode.textContent = 'Reading (P)';
+    activateSlide(currentIndex);
+  }
+  function exitPresentMode() {
+    var current = stage.querySelector('.slide.active');
+    if (current) returnSlideToFlow(current); // restores DOM order
+    presenting = false;
+    document.body.classList.remove('mode-present');
+    btnMode.setAttribute('aria-pressed', 'false');
+    btnMode.textContent = 'Present (P)';
+    counter.textContent = '';
+  }
+  function toggleMode() { presenting ? exitPresentMode() : enterPresentMode(); }
+  btnMode.addEventListener('click', toggleMode);
+
+  // --- Presenter API: durable-id state application (postMessage-driven) -
+  // slideById is a null-proto map (Object.create(null)) keyed on the
+  // durable data-slide-id, distinct from the hash-based slides[i].id used
+  // for reading-mode deep links. hasOwnProperty guards against inherited
+  // Object.prototype names (e.g. 'toString') resolving as a slide id, since
+  // this state arrives over the network via postMessage.
+  var slideById = Object.create(null);
+  slides.forEach(function (s, i) { if (s.dataset.slideId) slideById[s.dataset.slideId] = i; });
+  function knownSlide(id) {
+    return typeof id === 'string' && id !== '' && Object.prototype.hasOwnProperty.call(slideById, id);
+  }
+  function applyState(slideId, step) {
+    if (!knownSlide(slideId)) return {error: 'unknown-slide'};
+    var idx = slideById[slideId], steps = stepsOf(slides[idx]);
+    if (!Number.isInteger(step) || step < 0 || step > steps.length) return {error: 'bad-step'};
+    activateSlide(idx, false);
+    for (var i = 0; i < steps.length; i++) setStep(steps[i], i < step);
+    updateCounter();
+    return {slideId: slideId, step: step, stepCount: steps.length};
+  }
+
+  // --- Dark mode: stamp data-theme on <html>; themes style both directions
   var mq = window.matchMedia('(prefers-color-scheme: dark)');
   function isDarkNow() {
     var forced = document.documentElement.getAttribute('data-theme');
@@ -496,34 +1408,206 @@ html[data-theme="dark"] .icon-moon { display: none; }
     if (forced === 'light') return false;
     return mq.matches;
   }
-  function postTheme() {
-    /* Only a FORCED theme is posted: with no explicit choice, shell and
-       deck both follow prefers-color-scheme on their own and stay in sync.
-       targetOrigin is '*' because file:// pages have opaque origins a
-       concrete origin can never match; the payload is a theme name only. */
-    var forced = document.documentElement.getAttribute('data-theme');
-    if (!forced || !frame || !frame.contentWindow) return;
-    frame.contentWindow.postMessage({type: 'set-theme', theme: forced}, '*');
-  }
-  var stored = readStoredTheme();
-  if (stored === 'dark' || stored === 'light') {
-    document.documentElement.setAttribute('data-theme', stored);
+  function toggleTheme() {
+    var nextDark = !isDarkNow();
+    document.documentElement.setAttribute('data-theme', nextDark ? 'dark' : 'light');
+    btnTheme.setAttribute('aria-pressed', String(nextDark));
   }
   btnTheme.setAttribute('aria-pressed', String(isDarkNow()));
-  btnTheme.addEventListener('click', function () {
-    var next = isDarkNow() ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    btnTheme.setAttribute('aria-pressed', String(next === 'dark'));
-    storeTheme(next);
-    postTheme();
-  });
+  btnTheme.addEventListener('click', toggleTheme);
   mq.addEventListener('change', function () {
     if (!document.documentElement.hasAttribute('data-theme')) {
       btnTheme.setAttribute('aria-pressed', String(mq.matches));
     }
   });
 
-  route(true);
+  // --- Framed presenter API (embedded only): inside the course shell's or
+  // presenter console's iframe, the host drives the deck over postMessage.
+  // Two tiers:
+  //   1) 'set-theme' — the SHELL owns the theme; the deck hides its own
+  //      toolbar toggle (no duplicate control) and applies whatever theme
+  //      is posted, through the same data-theme path as the toolbar
+  //      button. Handled BEFORE the same-origin check below so legacy
+  //      shell theming keeps working under file:// (targetOrigin '*').
+  //      One-way: the deck never replies to set-theme.
+  //   2) Presenter-control messages (advance/retreat/goto-*/set-deck-state)
+  //      — the CONSOLE drives navigation and remote state application.
+  //      These require e.origin === window.location.origin (same-origin;
+  //      finding P1-origin) since they can mutate deck state, and
+  //      'set-deck-state' additionally requires a nonempty-string txId
+  //      (finding P1-txId) so every remote state application is traceable
+  //      to the request that caused it.
+  // Opened standalone (no parent frame) none of this runs — the deck keeps
+  // its own toggle and behaves exactly as before.
+  if (window.parent !== window) {
+    btnTheme.hidden = true;
+    var THIS_DECK = document.documentElement.getAttribute('data-deck'), applyingRemote = false;
+    var post = function (m) { window.parent.postMessage(m, '*'); };
+    var emitState = function () {
+      if (applyingRemote) return;
+      var s = slides[currentIndex], st = stepsOf(s);
+      var shown = st.filter(function (e) { return e.classList.contains('revealed'); }).length;
+      post({
+        type: 'deck-state', deck: THIS_DECK, slideId: s.dataset.slideId,
+        slideIndex: currentIndex, step: shown, slideCount: slides.length, stepCount: st.length
+      });
+    };
+    window.addEventListener('message', function (e) {
+      if (e.source !== window.parent) return; /* only the hosting frame */
+      var d = e.data;
+      if (!d || typeof d.type !== 'string') return;
+      if (d.type === 'set-theme') {
+        if (d.theme === 'dark' || d.theme === 'light') {
+          document.documentElement.setAttribute('data-theme', d.theme);
+          btnTheme.setAttribute('aria-pressed', String(d.theme === 'dark'));
+        }
+        return;
+      }
+      if (d.protocol !== 1 || d.deck !== THIS_DECK) return;
+      if (e.origin !== window.location.origin) return; // same-origin (finding P1-origin)
+      switch (d.type) {
+        case 'enter-present':
+          enterPresentMode(); emitState(); break;
+        case 'advance':
+          advance(); emitState(); break;
+        case 'retreat':
+          retreat(); emitState(); break;
+        case 'goto-first':
+          activateSlide(0, false); emitState(); break;
+        case 'goto-last':
+          activateSlide(slides.length - 1, true); emitState(); break;
+        case 'goto-slide':
+          if (!knownSlide(d.slideId)) { post({type: 'deck-error', deck: THIS_DECK, reason: 'unknown-slide'}); break; }
+          activateSlide(slideById[d.slideId], false); emitState(); break;
+        case 'set-deck-state': {
+          if (typeof d.txId !== 'string' || d.txId === '') {
+            post({type: 'deck-error', deck: THIS_DECK, reason: 'bad-txid'}); break;
+          }
+          applyingRemote = true;
+          var r = applyState(d.slideId, d.step);
+          applyingRemote = false;
+          if (r.error) { post({type: 'deck-error', deck: THIS_DECK, reason: r.error}); break; }
+          post({type: 'state-applied', deck: THIS_DECK, slideId: r.slideId, step: r.step, txId: d.txId}); break;
+        }
+        default:
+          post({type: 'deck-error', deck: THIS_DECK, reason: 'unknown-type'});
+      }
+    });
+    post({type: 'deck-ready', deck: THIS_DECK, slideCount: slides.length});
+  }
+
+  // --- Edit mode: contenteditable slides + Ctrl/Cmd+S save -------------
+  function toggleEditMode() {
+    editMode = !editMode;
+    slides.forEach(function (s) {
+      if (editMode) s.setAttribute('contenteditable', 'true');
+      else s.removeAttribute('contenteditable');
+    });
+  }
+  function downloadFallback(html) {
+    var blob = new Blob([html], { type: 'text/html' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'deck.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+  function saveDeck() {
+    // Work on a clone so the live DOM/edit state is never disturbed.
+    var clone = document.documentElement.cloneNode(true);
+    var clonedStage = clone.querySelector('#stage');
+    var parked = clonedStage && clonedStage.querySelector('.slide.active');
+    if (parked) {
+      parked.classList.remove('active');
+      var nextId = slideIds[slideIds.indexOf(parked.id) + 1];
+      var nextEl = nextId ? clone.querySelector('#' + nextId) : null;
+      var mainEl = clone.querySelector('.stage-wrap');
+      if (nextEl) mainEl.insertBefore(parked, nextEl);
+      else mainEl.appendChild(parked);
+    }
+    var editable = clone.querySelectorAll('[contenteditable]');
+    for (var i = 0; i < editable.length; i++) editable[i].removeAttribute('contenteditable');
+    // Never persist presentation-only reveal state into a saved file.
+    var stepEls = clone.querySelectorAll('[data-reveal]');
+    for (var j = 0; j < stepEls.length; j++) {
+      stepEls[j].classList.remove('revealed');
+      stepEls[j].removeAttribute('aria-hidden');
+    }
+    var html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    if (window.showSaveFilePicker) {
+      window.showSaveFilePicker({
+        suggestedName: 'deck.html',
+        types: [{ description: 'HTML', accept: { 'text/html': ['.html'] } }]
+      }).then(function (handle) {
+        return handle.createWritable().then(function (writable) {
+          return writable.write(html).then(function () { return writable.close(); });
+        });
+      }).catch(function (err) {
+        if (err && err.name !== 'AbortError') downloadFallback(html);
+      });
+    } else {
+      downloadFallback(html);
+    }
+  }
+
+  // --- Keyboard: nav (presentation mode only), mode/toc/edit toggles ---
+  document.addEventListener('keydown', function (e) {
+    var t = e.target;
+    var typing = t.isContentEditable || t.tagName === 'INPUT' || t.tagName === 'TEXTAREA';
+
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's' && editMode) {
+      e.preventDefault();
+      saveDeck();
+      return;
+    }
+    if (typing || tocDialog.open) return;
+
+    switch (e.key) {
+      case 'p': case 'P': toggleMode(); break;
+      case 't': case 'T': openToc(); break;
+      case 'e': case 'E': toggleEditMode(); break;
+      case 'ArrowRight': case 'PageDown': case ' ':
+        if (presenting) { e.preventDefault(); advance(); }
+        break;
+      case 'ArrowLeft': case 'PageUp':
+        if (presenting) { e.preventDefault(); retreat(); }
+        break;
+      case 'Home':
+        if (presenting) { e.preventDefault(); goTo(0); }
+        break;
+      case 'End':
+        if (presenting) { e.preventDefault(); activateSlide(slides.length - 1, true); }
+        break;
+    }
+  });
+
+  // --- Startup: honor ?mode=present and ?chrome ------------------------
+  var startupParams = new URLSearchParams(location.search);
+  if (startupParams.get('mode') === 'present') {
+    enterPresentMode();
+  }
+  // Presenter surfaces pass ?chrome to drop dead controls: when the host
+  // (console/stage) drives mode + navigation, the deck's own toolbar
+  // controls do nothing, so they're just clutter on those screens.
+  //   chrome=off  — the projected STAGE: hide the whole toolbar (the
+  //                 audience needs no controls and no slide counter) and
+  //                 collapse its reserved height so the stage fills the
+  //                 full viewport.
+  //   chrome=min  — the presenter CONSOLE: hide the mode toggle and the
+  //                 Contents button; keep the slide counter for the presenter.
+  // The theme toggle is already hidden whenever framed (see above). The
+  // course shell passes NO ?chrome, so students keep mode + Contents.
+  var chromeParam = startupParams.get('chrome');
+  if (chromeParam === 'off') {
+    var deckToolbar = document.querySelector('.deck-toolbar');
+    if (deckToolbar) deckToolbar.style.display = 'none';
+    document.documentElement.style.setProperty('--toolbar-h', '0px');
+  } else if (chromeParam === 'min') {
+    btnMode.hidden = true;
+    btnToc.hidden = true;
+    var btnPdf = document.getElementById('btn-pdf');
+    if (btnPdf) btnPdf.hidden = true;
+  }
 })();
 </script>
 </body>
