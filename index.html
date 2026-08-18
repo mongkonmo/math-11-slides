@@ -127,18 +127,19 @@
    control for the ENTIRE page: shell chrome, drawer, and the loaded deck
    (the shell posts the theme into the iframe; see the script). It has an
    opaque button background so it stays readable over any deck content.
-   Presentation mode: the deck fills the whole viewport; the handle sits on
-   the iframe's left edge, riding the letterbox gutter beside the 16:9 stage
-   on wide screens. A PORTRAIT phone has no such gutter — the slide runs
-   edge to edge — so the handle drops to the bottom-left corner there, into
-   the empty band below the stage. It learns the mode from the deck's
-   advisory `deck-mode` postMessage, mirrored onto <body> as
-   `.deck-presenting`; a deck that never sends it keeps the handle put.
-   The toggle sits over the deck toolbar's right end. The deck keeps its
-   slide counter clear of it (deck-base.css reserves room whenever the deck
-   is framed), so the two no longer collide. OS or browser fullscreen (the
-   deck's iframe going fullscreen) covers ALL shell chrome — handle and
-   toggle — entirely; leaving fullscreen restores both controls. */
+   The handle parks directly below the deck's toolbar band, one appearance
+   and one position in BOTH deck modes. Vertically centred it sat ON the
+   slide in presentation mode, where a portrait phone gives the deck the
+   full viewport width and no side gutter to ride. The band's height arrives
+   from the deck's advisory `deck-chrome` postMessage as `--deck-toolbar-h`
+   — the deck's toolbar wraps to two rows at phone widths in reading mode,
+   and the shell cannot measure inside the frame; a deck that never sends it
+   leaves the handle on the CSS fallback. The toggle sits over the deck
+   toolbar's right end. The deck keeps its slide counter clear of it
+   (deck-base.css reserves room whenever the deck is framed), so the two do
+   not collide. OS or browser fullscreen (the deck's iframe going
+   fullscreen) covers ALL shell chrome — handle and toggle — entirely;
+   leaving fullscreen restores both controls. */
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html { color-scheme: light dark; height: 100%; }
@@ -224,8 +225,15 @@ button:active { transform: translateY(1px); }
    over slide text (reading-mode text starts no closer than ~36px from the
    left edge even at 320px; the handle is ~26px wide). */
 #handle {
-  position: fixed; left: 0; top: 50%; z-index: 41;
-  transform: translateY(-50%);
+  position: fixed; left: 0; z-index: 41;
+  /* Parked directly below the deck's toolbar, in BOTH deck modes. Centred on
+     the viewport it sat on the slide in presentation mode, where a portrait
+     phone gives the deck full width and no side gutter to ride. The height
+     comes from the deck's `deck-chrome` message, because the deck's toolbar
+     wraps to two rows at phone widths in reading mode and the shell cannot
+     measure inside the frame; the 3.25rem fallback is the unwrapped band,
+     and also what the index state (no deck, no toolbar) uses. */
+  top: var(--deck-toolbar-h, 3.25rem);
   writing-mode: vertical-rl;
   font-size: 0.8rem;
   padding: 0.75rem 0.34rem;
@@ -236,26 +244,6 @@ button:active { transform: translateY(1px); }
   transition: left 160ms ease;
 }
 body.drawer-open #handle { left: min(19rem, calc(100vw - 3.25rem)); }
-/* Portrait phone: the tab's whole design assumes a gutter to ride — on a
-   wide screen it sits over the page gutter in reading mode and over the
-   letterbox band beside the 16:9 stage in presentation mode. In portrait
-   there IS no side gutter: the slide runs edge to edge, so the tab lands on
-   top of it. The empty band moves BELOW the stage there (a portrait
-   viewport is far taller than the 4:3-clamped stage), so the tab moves with
-   it — down to the bottom-left corner, as an ordinary horizontal pill. It
-   stays put when the drawer opens, riding above it (z-index 41) as "Close". */
-@media (orientation: portrait) and (max-width: 40rem) {
-  body.deck-presenting #handle {
-    top: auto; bottom: 0.85rem; left: 0.85rem;
-    transform: none;
-    writing-mode: horizontal-tb;
-    border-radius: 999px;
-    border-left: 1px solid var(--btn-border);
-    padding: 0.42rem 1rem;
-    transition: none;
-  }
-  body.deck-presenting.drawer-open #handle { left: 0.85rem; }
-}
 /* Page-level dark-mode toggle: fixed top-right, always visible (like the
    handle), a sun/moon ICON button with aria-pressed state (accessible name
    on the button; the SVG is decorative). Opaque --btn-bg keeps it readable
@@ -412,14 +400,15 @@ html[data-theme="dark"] .icon-moon { display: none; }
     if (open && moveFocus) drawer.focus();
     if (!open && moveFocus) handle.focus();
   }
-  /* Presentation mode inside the frame: mirror it onto the shell body so the
-     Index tab's portrait rule can key off it. Advisory only — a deck that
-     never sends it just keeps the tab where it has always been. */
+  /* The framed deck reports its toolbar height (it re-measures on mode change
+     and on rotation); the Index tab parks below that band. Advisory only — a
+     deck that never sends it leaves the tab on the CSS fallback. */
   window.addEventListener('message', function (e) {
     if (!frame || e.source !== frame.contentWindow) return;
     var d = e.data;
-    if (!d || d.type !== 'deck-mode') return;
-    document.body.classList.toggle('deck-presenting', d.presenting === true);
+    if (!d || d.type !== 'deck-chrome' || typeof d.toolbarHeight !== 'number') return;
+    if (!(d.toolbarHeight > 0)) return;
+    document.documentElement.style.setProperty('--deck-toolbar-h', d.toolbarHeight + 'px');
   });
   handle.addEventListener('click', function () { setDrawer(!drawerOpen(), true); });
   scrim.addEventListener('click', function () { setDrawer(false, true); });
@@ -442,7 +431,7 @@ html[data-theme="dark"] .icon-moon { display: none; }
       /* Fresh iframe per deck: setting src on an existing iframe would push
          its own entry into the session history and break Back. */
       if (frame) frame.remove();
-      document.body.classList.remove('deck-presenting'); /* fresh deck starts reading */
+      document.documentElement.style.removeProperty('--deck-toolbar-h'); /* the new deck re-reports */
       frame = document.createElement('iframe');
       frame.setAttribute('title', deck.title);
       frame.setAttribute('data-slug', slug);
@@ -460,7 +449,7 @@ html[data-theme="dark"] .icon-moon { display: none; }
     viewer.hidden = true;
     welcome.hidden = false;
     if (frame) { frame.remove(); frame = null; }
-    document.body.classList.remove('deck-presenting'); /* no deck, no slide */
+    document.documentElement.style.removeProperty('--deck-toolbar-h'); /* no deck, no bar */
     markCurrent(null);
     document.title = indexTitle;
     setDrawer(true, false);

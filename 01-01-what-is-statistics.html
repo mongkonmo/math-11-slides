@@ -1221,21 +1221,12 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
     }
     if (currentIndex > 0) activateSlide(currentIndex - 1, true);
   }
-  // The shell needs the mode: on a portrait phone its Index tab has to move
-  // off the slide (shell-template.html). One-way and advisory — the deck
-  // never waits for a reply and works exactly the same unframed.
-  function notifyMode() {
-    if (window.parent === window) return;
-    try { window.parent.postMessage({type: 'deck-mode', presenting: presenting}, '*'); }
-    catch (err) { /* a frame we may not post into is not worth breaking over */ }
-  }
   function enterPresentMode() {
     presenting = true;
     document.body.classList.add('mode-present');
     btnMode.setAttribute('aria-pressed', 'true');
     btnMode.textContent = 'Reading (P)';
     activateSlide(currentIndex);
-    notifyMode();
   }
   function exitPresentMode() {
     var current = stage.querySelector('.slide.active');
@@ -1245,7 +1236,6 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
     btnMode.setAttribute('aria-pressed', 'false');
     btnMode.textContent = 'Present (P)';
     counter.textContent = '';
-    notifyMode();
   }
   function toggleMode() { presenting ? exitPresentMode() : enterPresentMode(); }
   btnMode.addEventListener('click', toggleMode);
@@ -1459,10 +1449,18 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
   // wrap, and the stage then overflows the viewport by the extra row height.
   // Measure the band instead of assuming it.
   var toolbarEl = document.querySelector('.deck-toolbar');
+  // The height has a second consumer: framed by the course shell, the shell
+  // parks its Index tab directly below this bar and cannot measure inside the
+  // frame. One-way and advisory — the deck never waits for a reply, and
+  // unframed it behaves exactly as before.
   function syncToolbarHeight() {
     if (!toolbarEl) return;
     var h = toolbarEl.getBoundingClientRect().height;
-    if (h > 0) document.documentElement.style.setProperty('--toolbar-h', h + 'px');
+    if (h <= 0) return;
+    document.documentElement.style.setProperty('--toolbar-h', h + 'px');
+    if (window.parent === window) return;
+    try { window.parent.postMessage({type: 'deck-chrome', toolbarHeight: h}, '*'); }
+    catch (err) { /* a frame we may not post into is not worth breaking over */ }
   }
 
   // --- Touch navigation (presentation mode only) -----------------------
