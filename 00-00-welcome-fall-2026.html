@@ -428,15 +428,26 @@ body {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--card-border, var(--rule));
 }
-.deck-toolbar button, #toc-dialog button {
+.deck-toolbar button, .deck-toolbar a.btn-link, #toc-dialog button {
   font: inherit; font-size: 0.86rem; font-weight: 600;
   color: var(--btn-text); background: var(--btn-bg);
   border: 1px solid var(--btn-border); border-radius: 999px;
   padding: 0.32rem 0.95rem; cursor: pointer;
   transition: background-color 120ms ease, border-color 120ms ease;
 }
-.deck-toolbar button:hover, #toc-dialog button:hover { background: var(--btn-bg-hover); }
-.deck-toolbar button:active, #toc-dialog button:active { transform: translateY(1px); }
+/* The handout link is a toolbar control, not body copy: it takes the button
+   shape, so it stays distinguishable by border and fill rather than by an
+   underline, and inherits the button focus ring. */
+.deck-toolbar a.btn-link { text-decoration: none; line-height: normal; }
+.deck-toolbar button:hover, .deck-toolbar a.btn-link:hover, #toc-dialog button:hover { background: var(--btn-bg-hover); }
+.deck-toolbar button:active, .deck-toolbar a.btn-link:active, #toc-dialog button:active { transform: translateY(1px); }
+/* Screen-reader-only text: extends a control's spoken label without adding
+   visible words to the toolbar. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
 .deck-toolbar button[aria-pressed="true"] { background: var(--btn-bg-hover); }
 /* Slide counter: centered in the toolbar band (absolute so it centers on
    the band width, not the space left of the buttons) — clears the shell's
@@ -732,6 +743,7 @@ body.mode-present .callout li { margin: 0.5cqh 0; }
   <button id="btn-mode" aria-pressed="false">Present (P)</button>
   <button id="btn-toc">Contents</button>
   <button id="btn-themeflip" aria-pressed="false">Dark mode</button>
+  <a id="btn-pdf" class="btn-link" href="00-00-welcome-fall-2026.pdf" download>Download PDF<span class="sr-only"> handout of these slides. The web version you are reading is the accessible one.</span></a>
   <span id="slide-counter" aria-live="polite"></span>
 </div>
 <dialog id="toc-dialog" aria-label="Table of contents">
@@ -1443,6 +1455,8 @@ body.mode-present .callout li { margin: 0.5cqh 0; }
   } else if (chromeParam === 'min') {
     btnMode.hidden = true;
     btnToc.hidden = true;
+    var btnPdf = document.getElementById('btn-pdf');
+    if (btnPdf) btnPdf.hidden = true;
   }
 })();
 </script>
