@@ -71,6 +71,7 @@
   --callout-procedure-fill:#fffaf8; --callout-procedure-edge:#983b0f; --callout-procedure-ink:#983b0f;
   --callout-example-fill:#f2fbf8; --callout-example-edge:#42998f; --callout-example-ink:#152a56;
   --callout-youtry-fill:#fff9e0; --callout-youtry-edge:#c47c00; --callout-youtry-ink:#8f3c00;
+  --callout-warning-fill:#fff0f0; --callout-warning-edge:#a91d11; --callout-warning-ink:#a91d11;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -88,6 +89,7 @@
     --callout-procedure-fill:#fffaf8; --callout-procedure-edge:#983b0f; --callout-procedure-ink:#983b0f;
     --callout-example-fill:#f2fbf8; --callout-example-edge:#42998f; --callout-example-ink:#35689c;
     --callout-youtry-fill:#fff9e0; --callout-youtry-edge:#c47c00; --callout-youtry-ink:#8f3c00;
+    --callout-warning-fill:#fff0f0; --callout-warning-edge:#a91d11; --callout-warning-ink:#a91d11;
   }
 }
 :root[data-theme="dark"] {
@@ -105,6 +107,7 @@
   --callout-procedure-fill:#fffaf8; --callout-procedure-edge:#983b0f; --callout-procedure-ink:#983b0f;
   --callout-example-fill:#f2fbf8; --callout-example-edge:#42998f; --callout-example-ink:#35689c;
   --callout-youtry-fill:#fff9e0; --callout-youtry-edge:#c47c00; --callout-youtry-ink:#8f3c00;
+  --callout-warning-fill:#fff0f0; --callout-warning-edge:#a91d11; --callout-warning-ink:#a91d11;
 }
 :root[data-theme="light"] {
   --shadow-card: 0 1px 2px rgba(45, 49, 66, 0.06), 0 8px 24px rgba(45, 49, 66, 0.08);
@@ -121,8 +124,8 @@
   --callout-procedure-fill:#fffaf8; --callout-procedure-edge:#983b0f; --callout-procedure-ink:#983b0f;
   --callout-example-fill:#f2fbf8; --callout-example-edge:#42998f; --callout-example-ink:#152a56;
   --callout-youtry-fill:#fff9e0; --callout-youtry-edge:#c47c00; --callout-youtry-ink:#8f3c00;
+  --callout-warning-fill:#fff0f0; --callout-warning-edge:#a91d11; --callout-warning-ink:#a91d11;
 }
-
 /* 2) BASE BLOCK — templates/deck-base.css */
 /* === accessible-slides deck-base.css ===
    Layout + behavior CSS shared by every deck. Colors, fonts, and sizes come
@@ -290,7 +293,7 @@ body {
    example label change color in dark). The kind is always ALSO named by
    the visible label text, so color never carries meaning alone. Anatomy
    (em-based, so it scales identically on the stage):
-   - tab-badge (LT, definition): fill + 2px/0.125em 4-side border, 6px
+   - tab-badge (LT, definition, warning): fill + 2px/0.125em 4-side border, 6px
      radius, label badge overlapping the top border, white badge text.
    - left-bar (theorem, procedure): fill + 3px/0.1875em left bar, square
      corners, bar-colored bold label line.
@@ -302,33 +305,37 @@ body {
 .callout-procedure  { --co-fill: var(--callout-procedure-fill);  --co-edge: var(--callout-procedure-edge);  --co-ink: var(--callout-procedure-ink); }
 .callout-example    { --co-fill: var(--callout-example-fill);    --co-edge: var(--callout-example-edge);    --co-ink: var(--callout-example-ink); }
 .callout-youtry     { --co-fill: var(--callout-youtry-fill);     --co-edge: var(--callout-youtry-edge);     --co-ink: var(--callout-youtry-ink); }
+.callout-warning    { --co-fill: var(--callout-warning-fill);    --co-edge: var(--callout-warning-edge);    --co-ink: var(--callout-warning-ink); }
 .callout-lt, .callout-definition, .callout-theorem,
-.callout-procedure, .callout-example, .callout-youtry {
+.callout-procedure, .callout-example, .callout-youtry, .callout-warning {
   background: var(--co-fill);
   color: var(--callout-text, var(--text-primary)); /* notes pin #1a1a1a in both modes */
 }
 .callout-lt li::marker, .callout-definition li::marker,
 .callout-theorem li::marker, .callout-procedure li::marker,
-.callout-example li::marker, .callout-youtry li::marker {
+.callout-example li::marker, .callout-youtry li::marker,
+.callout-warning li::marker {
   color: var(--callout-text, currentColor); /* markers stay dark inside light box fills */
 }
 .callout-lt .callout-label, .callout-definition .callout-label,
 .callout-theorem .callout-label, .callout-procedure .callout-label,
-.callout-example .callout-label, .callout-youtry .callout-label {
+.callout-example .callout-label, .callout-youtry .callout-label,
+.callout-warning .callout-label {
   color: var(--co-ink);
   font-family: var(--font-body);
   text-transform: none;
   letter-spacing: normal;
 }
 /* tab-badge kinds */
-.callout-lt, .callout-definition {
+.callout-lt, .callout-definition, .callout-warning {
   position: relative;
   border: 0.125em solid var(--co-edge);
   border-radius: 6px;
   padding: 1.1em 1.2em 1em;
   margin: 1.8em 0 1.5em;
 }
-.callout-lt > .callout-label, .callout-definition > .callout-label {
+.callout-lt > .callout-label, .callout-definition > .callout-label,
+.callout-warning > .callout-label {
   position: absolute;
   top: -0.7em;
   left: 1.2em;
@@ -589,13 +596,13 @@ body.mode-present .callout-label { font-size: 2cqw; margin-bottom: 1cqh; }
    generic .callout stage overrides above must not distort it); vertical
    padding tightens slightly for stage fit — proportions otherwise match
    the notes. */
-body.mode-present :is(.callout-lt, .callout-definition) {
+body.mode-present :is(.callout-lt, .callout-definition, .callout-warning) {
   padding: 1em 1.2em 0.85em;
   margin: 1.4em 0 0.6em;
   border-width: 0.125em;
   border-radius: 6px;
 }
-body.mode-present :is(.callout-lt, .callout-definition) > .callout-label {
+body.mode-present :is(.callout-lt, .callout-definition, .callout-warning) > .callout-label {
   font-size: 0.85em;
   margin: 0;
 }
@@ -695,7 +702,6 @@ mjx-container[display="true"] {
   .deck-toolbar { display: none; }
   .slide { box-shadow: none; }
 }
-
 /* 3) DECK BLOCK  — deck-specific layout tweaks only; no new colors      */
 </style>
 <style id="MJX-SVG-styles">
@@ -984,7 +990,7 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
     <div class="callout callout-youtry">
       <p class="callout-label">You Try 1.1.1. Descriptive or Inferential?</p>
       <ol>
-        <li>Of 240 students in Math 11, 150 have declared a major. <span data-reveal=""><strong>Descriptive.</strong></span></li>
+        <li>Of the 45 games the team played, it won 28. <span data-reveal=""><strong>Descriptive.</strong></span></li>
         <li>A taste test of 80 shoppers suggests customers statewide prefer the new recipe. <span data-reveal=""><strong>Inferential.</strong></span></li>
         <li>From 500 households, the agency estimates county median income is $71,000. <span data-reveal=""><strong>Inferential.</strong></span></li>
       </ol>
@@ -1021,7 +1027,7 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
       <p class="slide-course">MATH 11</p>
     </div>
     <h2 id="s14-h">Statistics Is Not Mainly Arithmetic</h2>
-    <div class="callout">
+    <div class="callout callout-warning">
       <span class="callout-label">Warning 1.1.8</span>
       <p>As we progress through this course, you will be presented with many formulas and procedures. This may mislead you into thinking that statistics is mainly about calculating things. This could not be further from the truth.</p>
     </div>
@@ -1032,7 +1038,7 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
       <p class="slide-course">MATH 11</p>
     </div>
     <h2 id="s15-h">What Your Job Actually Is</h2>
-    <div class="callout">
+    <div class="callout callout-warning">
       <span class="callout-label">Warning 1.1.8, continued</span>
       <p>While calculations are necessary, it is more important that you understand <strong>how to interpret the results</strong> of these calculations and procedures. Modern technology can perform statistical calculations quickly and accurately. Your job is to understand what the numbers mean and how to use them to make informed decisions.</p>
     </div>
