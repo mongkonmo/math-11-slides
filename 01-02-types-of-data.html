@@ -476,6 +476,33 @@ body {
   color: var(--btn-text);
   font-variant-numeric: tabular-nums;
 }
+
+/* Narrow screen in presentation mode (a phone in portrait): the toolbar has
+   to stay ONE row. Two things broke that. The counter is absolutely centered,
+   so once the buttons fill the band it lands on top of them; and five
+   controls wrap onto a second row, which also throws off the stage height
+   (see --toolbar-h). Fix both: the counter rejoins the flex flow at the end
+   of the row, and the two controls nobody needs mid-presentation drop out.
+   Dark mode and the handout stay one tap away in reading mode. */
+@media (max-width: 40rem) {
+  body.mode-present .deck-toolbar { flex-wrap: nowrap; }
+  body.mode-present #slide-counter {
+    position: static;
+    transform: none;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+  body.mode-present #btn-themeflip,
+  body.mode-present #btn-pdf { display: none; }
+  /* Inside the course shell the top-right corner belongs to the shell's own
+     dark-mode toggle (2rem square, 1rem in). Stop the counter short of it. */
+  body.framed.mode-present #slide-counter { margin-right: 3.25rem; }
+}
+/* The presentation stage is a gesture surface (the deck controller reads
+   single-finger swipes and taps on it). Declaring the same touch-action the
+   presenter console's #swipe-layer declares keeps vertical panning and pinch
+   zoom native while leaving horizontal travel for the controller. */
+body.mode-present .stage-wrap { touch-action: pan-y pinch-zoom; }
 :is(a, button, summary, [tabindex]):focus-visible {
   outline: 3px solid var(--focus); outline-offset: 2px;
 }
@@ -1421,12 +1448,21 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
     }
     if (currentIndex > 0) activateSlide(currentIndex - 1, true);
   }
+  // The shell needs the mode: on a portrait phone its Index tab has to move
+  // off the slide (shell-template.html). One-way and advisory — the deck
+  // never waits for a reply and works exactly the same unframed.
+  function notifyMode() {
+    if (window.parent === window) return;
+    try { window.parent.postMessage({type: 'deck-mode', presenting: presenting}, '*'); }
+    catch (err) { /* a frame we may not post into is not worth breaking over */ }
+  }
   function enterPresentMode() {
     presenting = true;
     document.body.classList.add('mode-present');
     btnMode.setAttribute('aria-pressed', 'true');
     btnMode.textContent = 'Reading (P)';
     activateSlide(currentIndex);
+    notifyMode();
   }
   function exitPresentMode() {
     var current = stage.querySelector('.slide.active');
@@ -1436,6 +1472,7 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
     btnMode.setAttribute('aria-pressed', 'false');
     btnMode.textContent = 'Present (P)';
     counter.textContent = '';
+    notifyMode();
   }
   function toggleMode() { presenting ? exitPresentMode() : enterPresentMode(); }
   btnMode.addEventListener('click', toggleMode);
@@ -1502,6 +1539,7 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
   // its own toggle and behaves exactly as before.
   if (window.parent !== window) {
     btnTheme.hidden = true;
+    document.body.classList.add('framed'); /* the host owns the top-right corner */
     var THIS_DECK = document.documentElement.getAttribute('data-deck'), applyingRemote = false;
     var post = function (m) { window.parent.postMessage(m, '*'); };
     var emitState = function () {
@@ -1642,6 +1680,91 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
     }
   });
 
+  // --- Toolbar height: the stage math needs the toolbar's REAL height --
+  // deck-base.css sizes the stage from `100vh - var(--toolbar-h)`, whose
+  // fallback assumes a single 3.25rem row. On a narrow screen the toolbar can
+  // wrap, and the stage then overflows the viewport by the extra row height.
+  // Measure the band instead of assuming it.
+  var toolbarEl = document.querySelector('.deck-toolbar');
+  function syncToolbarHeight() {
+    if (!toolbarEl) return;
+    var h = toolbarEl.getBoundingClientRect().height;
+    if (h > 0) document.documentElement.style.setProperty('--toolbar-h', h + 'px');
+  }
+
+  // --- Touch navigation (presentation mode only) -----------------------
+  // A phone has no arrow keys, so presentation mode was a dead end there:
+  // Contents could still jump between slides, but reveal steps were
+  // unreachable by any input the device has. Two single-finger gestures,
+  // both routed through the same advance()/retreat() the keyboard uses.
+  //
+  //   SWIPE left / right — the same contract as the presenter console's
+  //     scripts/presenter/client/gestures.js: 50px of NET horizontal
+  //     travel (an early lift or a reversal lands below it), 2x horizontal
+  //     dominance, a second finger aborts the gesture, the release must
+  //     match the tracked pointerId, and pointer capture is never taken
+  //     (WebKit #220196). Continuation listeners sit on the DOCUMENT,
+  //     mirroring that module's window listeners, because a finger may
+  //     leave the stage before it lifts.
+  //   TAP on the right / left half of the stage — the single-pointer,
+  //     non-path alternative REQUIRED by WCAG 2.5.1 (Pointer Gestures),
+  //     so a swipe is never the only way to reach a reveal step. The
+  //     console satisfies 2.5.1 with its bar buttons instead; a deck on a
+  //     phone has no such buttons, so the tap carries it.
+  //
+  // Touch and pen only: a mouse keeps the keyboard bindings and nothing
+  // else, since click-to-advance would fire on stray clicks mid-lecture.
+  // Vertical panning and pinch zoom stay native — the stage declares
+  // `touch-action: pan-y pinch-zoom` and a vertically dominated drag is
+  // ignored — so an overfull slide still scrolls (deck-base.css guard).
+  var SWIPE_THRESHOLD_PX = 50; // matches the console's gestures.js
+  var TAP_SLOP_PX = 10;        // travel still counted as a stationary tap
+  var TAP_MS = 600;            // beyond this, a press is no longer a tap
+  var touchNavOn = true;       // cleared on presenter surfaces (see ?chrome)
+  var tracking = null;         // {pointerId, startX, startY, startT, aborted}
+
+  function touchNavLive(e) {
+    return presenting && touchNavOn && !editMode &&
+      (e.pointerType === 'touch' || e.pointerType === 'pen');
+  }
+  // A gesture that starts or ends on a control belongs to that control.
+  function interactiveTarget(el) {
+    return !!(el && el.closest && el.closest(
+      'a, button, input, select, textarea, summary, label, [contenteditable="true"]'));
+  }
+  function textSelected() {
+    var sel = window.getSelection();
+    return !!(sel && !sel.isCollapsed && String(sel).trim() !== '');
+  }
+  stageWrap.addEventListener('pointerdown', function (e) {
+    if (tracking) { tracking.aborted = true; return; } // a second finger
+    if (!touchNavLive(e) || interactiveTarget(e.target)) return;
+    tracking = {pointerId: e.pointerId, startX: e.clientX, startY: e.clientY,
+                startT: e.timeStamp, aborted: false};
+  });
+  document.addEventListener('pointerup', function (e) {
+    if (!tracking || e.pointerId !== tracking.pointerId) return;
+    var t = tracking;
+    tracking = null;
+    if (t.aborted || !touchNavLive(e)) return;
+    if (interactiveTarget(e.target) || textSelected()) return;
+    var dx = e.clientX - t.startX, dy = e.clientY - t.startY;
+    var adx = Math.abs(dx), ady = Math.abs(dy);
+    if (adx >= SWIPE_THRESHOLD_PX && adx > 2 * ady) {
+      if (dx < 0) { advance(); } else { retreat(); }
+      return;
+    }
+    if (adx <= TAP_SLOP_PX && ady <= TAP_SLOP_PX && (e.timeStamp - t.startT) <= TAP_MS) {
+      var box = stage.getBoundingClientRect();
+      // A tap in the letterbox band (outside the stage) counts as forward.
+      if (!box.width || e.clientX >= box.left + box.width / 2) { advance(); }
+      else { retreat(); }
+    }
+  });
+  document.addEventListener('pointercancel', function (e) {
+    if (tracking && e.pointerId === tracking.pointerId) tracking = null;
+  });
+
   // --- Startup: honor ?mode=present and ?chrome ------------------------
   var startupParams = new URLSearchParams(location.search);
   if (startupParams.get('mode') === 'present') {
@@ -1658,16 +1781,33 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
   //                 Contents button; keep the slide counter for the presenter.
   // The theme toggle is already hidden whenever framed (see above). The
   // course shell passes NO ?chrome, so students keep mode + Contents.
+  // Touch navigation is OFF on both presenter surfaces: the console and the
+  // projected stage are driven by the host over postMessage, and a local
+  // swipe there would move one surface out of step with the other.
   var chromeParam = startupParams.get('chrome');
   if (chromeParam === 'off') {
     var deckToolbar = document.querySelector('.deck-toolbar');
     if (deckToolbar) deckToolbar.style.display = 'none';
     document.documentElement.style.setProperty('--toolbar-h', '0px');
+    touchNavOn = false;
   } else if (chromeParam === 'min') {
     btnMode.hidden = true;
     btnToc.hidden = true;
     var btnPdf = document.getElementById('btn-pdf');
     if (btnPdf) btnPdf.hidden = true;
+    touchNavOn = false;
+    syncToolbarHeight();
+  } else {
+    syncToolbarHeight();
+  }
+  // The toolbar's height changes with mode (present mode hides two controls
+  // at narrow widths) and with rotation, so keep --toolbar-h in step.
+  if (chromeParam !== 'off') {
+    window.addEventListener('resize', syncToolbarHeight);
+    window.addEventListener('orientationchange', syncToolbarHeight);
+    if (window.ResizeObserver && toolbarEl) {
+      new window.ResizeObserver(syncToolbarHeight).observe(toolbarEl);
+    }
   }
 })();
 </script>
