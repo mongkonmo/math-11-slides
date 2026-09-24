@@ -1716,8 +1716,16 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
 
   var presenting = false;
   var editMode   = false;
-  // Initial slide comes from a #sN deep link, defaulting to the first slide.
-  var currentIndex = Math.max(0, slideIds.indexOf(location.hash.slice(1)));
+  // Initial slide comes from a deep link, defaulting to the first slide:
+  // a #sN reading-mode anchor, or a durable #<data-slide-id> (what the
+  // course shell records in its own address, so a refresh after a rebuild
+  // that inserted slides still lands on the same slide).
+  var startHash = location.hash.slice(1);
+  var currentIndex = slideIds.indexOf(startHash);
+  if (currentIndex < 0) {
+    currentIndex = slides.map(function (s) { return s.dataset.slideId || ''; }).indexOf(startHash);
+  }
+  if (currentIndex < 0) currentIndex = 0;
 
   // --- Table of contents: built once from slide headings --------------
   slides.forEach(function (slide, i) {
@@ -1772,6 +1780,10 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
       el.removeAttribute('aria-hidden');
     });
   }
+  // Framed decks report every local slide/step change to the host page
+  // (the course shell records the slide in its own address; the presenter
+  // console reads it back). Standalone this stays a no-op.
+  var notifyLocalNav = function () {};
   function updateCounter() {
     var text = 'Slide ' + (currentIndex + 1) + ' of ' + slides.length;
     var steps = stepsOf(slides[currentIndex]);
@@ -1781,6 +1793,7 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
       text += ', step ' + shown + ' of ' + steps.length;
     }
     counter.textContent = text;
+    notifyLocalNav();
   }
 
   // --- Presentation mode: move the active slide into #stage, and back -
@@ -1848,6 +1861,7 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
     btnMode.setAttribute('aria-pressed', 'false');
     btnMode.textContent = 'Present (P)';
     counter.textContent = '';
+    notifyLocalNav();
   }
   function toggleMode() { presenting ? exitPresentMode() : enterPresentMode(); }
   btnMode.addEventListener('click', toggleMode);
@@ -1923,9 +1937,16 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
       var shown = st.filter(function (e) { return e.classList.contains('revealed'); }).length;
       post({
         type: 'deck-state', deck: THIS_DECK, slideId: s.dataset.slideId,
-        slideIndex: currentIndex, step: shown, slideCount: slides.length, stepCount: st.length
+        slideIndex: currentIndex, step: shown, slideCount: slides.length, stepCount: st.length,
+        presenting: presenting
       });
     };
+    // Genuine local navigation (keys, taps, the TOC) reports through here.
+    // A host command reports once, explicitly, in the switch below; while
+    // one is being handled the local hook stays quiet so the host never
+    // sees the same move twice (the console counts revisions per report).
+    var handlingRemote = false;
+    notifyLocalNav = function () { if (!handlingRemote) emitState(); };
     window.addEventListener('message', function (e) {
       if (e.source !== window.parent) return; /* only the hosting frame */
       var d = e.data;
@@ -1939,7 +1960,8 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
       }
       if (d.protocol !== 1 || d.deck !== THIS_DECK) return;
       if (e.origin !== window.location.origin) return; // same-origin (finding P1-origin)
-      switch (d.type) {
+      handlingRemote = true;
+      try { switch (d.type) {
         case 'enter-present':
           enterPresentMode(); emitState(); break;
         case 'advance':
@@ -1965,7 +1987,7 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
         }
         default:
           post({type: 'deck-error', deck: THIS_DECK, reason: 'unknown-type'});
-      }
+      } } finally { handlingRemote = false; }
     });
     post({type: 'deck-ready', deck: THIS_DECK, slideCount: slides.length});
   }

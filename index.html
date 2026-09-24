@@ -351,6 +351,11 @@ html[data-theme="dark"] .icon-moon { display: none; }
       <li><a href="03-03-measures-of-relative-standing.html" data-slug="03-03-measures-of-relative-standing" data-title="Math 11 §3.3 — Measures of Relative Standing">§3.3 Measures of Relative Standing</a></li>
       <li><a href="03-04-boxplots-and-five-number-summary.html" data-slug="03-04-boxplots-and-five-number-summary" data-title="Math 11 §3.4 — Boxplots and Five-Number Summary">§3.4 Boxplots and Five-Number Summary</a></li>
     </ul>
+    <h2 class="chap-label">Chapter 4</h2>
+    <ul class="deck-list">
+      <li><a href="04-01-basic-concepts-of-probability.html" data-slug="04-01-basic-concepts-of-probability" data-title="Math 11 §4.1 — Basic Concepts of Probability">§4.1 Basic Concepts of Probability</a></li>
+      <li><a href="04-02-events-and-sample-spaces.html" data-slug="04-02-events-and-sample-spaces" data-title="Math 11 §4.2 — Events and Sample Spaces">§4.2 Events and Sample Spaces</a></li>
+    </ul>
   </nav>
 </div>
 <script>
@@ -360,8 +365,13 @@ html[data-theme="dark"] .icon-moon { display: none; }
      Hash routing: index.html#<deck-basename> selects a deck; the bare URL
      is the index state. Back/forward walk the history; refresh keeps the
      selection; an unknown hash falls back to the index (no error page).
-     The shell never reaches into the frame's DOM — it only sets iframe.src
-     and posts the theme via postMessage. */
+     While a framed deck is presenting it reports each slide it lands on
+     (its `deck-state` message), and the shell records that slide in its
+     own address as index.html#<deck-basename>/<data-slide-id>, so a
+     refresh reopens the deck presenting on the same slide (a durable
+     slide id, not the sN anchor, so it survives a rebuild that inserted
+     slides). The shell never reaches into the frame's DOM — it only sets
+     iframe.src and posts the theme via postMessage. */
   var drawer   = document.getElementById('drawer');
   var scrim    = document.getElementById('scrim');
   var handle   = document.getElementById('handle');
@@ -421,7 +431,21 @@ html[data-theme="dark"] .icon-moon { display: none; }
   window.addEventListener('message', function (e) {
     if (!frame || e.source !== frame.contentWindow) return;
     var d = e.data;
-    if (!d || d.type !== 'deck-chrome' || typeof d.toolbarHeight !== 'number') return;
+    if (!d || typeof d.type !== 'string') return;
+    if (d.type === 'deck-state') {
+      /* Record the presented slide in the shell's own address (replaceState:
+         no history entry, no hashchange). Leaving presentation mode drops
+         the slide part again. Only the deck's durable id is trusted here:
+         it is a plain string the deck itself derived from its markup. */
+      var slug = frame.getAttribute('data-slug');
+      var next = '#' + slug;
+      if (d.presenting === true && typeof d.slideId === 'string' && d.slideId !== '' && d.slideId.indexOf('/') === -1) {
+        next += '/' + d.slideId;
+      }
+      if (location.hash !== next) history.replaceState(null, '', next);
+      return;
+    }
+    if (d.type !== 'deck-chrome' || typeof d.toolbarHeight !== 'number') return;
     if (!(d.toolbarHeight > 0)) return;
     document.documentElement.style.setProperty('--deck-toolbar-h', d.toolbarHeight + 'px');
   });
@@ -435,7 +459,15 @@ html[data-theme="dark"] .icon-moon { display: none; }
     });
   }
 
-  function showDeck(slug) {
+  /* #<slug> or #<slug>/<slide-id>: the slide part is only ever consumed at
+     frame creation (a refresh or deep link); a live deck owns its position. */
+  function parseHash() {
+    var h = location.hash.slice(1), cut = h.indexOf('/');
+    if (cut === -1) return {slug: h, slide: ''};
+    return {slug: h.slice(0, cut), slide: h.slice(cut + 1)};
+  }
+
+  function showDeck(slug, slide) {
     var deck = decks[slug];
     welcome.hidden = true;
     viewer.hidden = false;
@@ -453,7 +485,9 @@ html[data-theme="dark"] .icon-moon { display: none; }
       frame.setAttribute('allowfullscreen', '');
       frame.setAttribute('allow', 'fullscreen');
       frame.addEventListener('load', postTheme); /* deck obeys the shell's theme from first paint */
-      frame.src = deck.file;
+      /* A remembered slide reopens the deck presenting on it: the deck
+         honors ?mode=present and resolves a durable id in its hash. */
+      frame.src = slide ? deck.file + '?mode=present#' + slide : deck.file;
       viewer.appendChild(frame);
     }
     frame.focus(); /* land keyboard/SR users on the deck */
@@ -472,8 +506,8 @@ html[data-theme="dark"] .icon-moon { display: none; }
   }
 
   function route(initial) {
-    var slug = location.hash.slice(1);
-    if (decks[slug]) showDeck(slug);
+    var h = parseHash();
+    if (decks[h.slug]) showDeck(h.slug, h.slide);
     else showIndex(!initial);
   }
   window.addEventListener('hashchange', function () { route(false); });
@@ -485,7 +519,7 @@ html[data-theme="dark"] .icon-moon { display: none; }
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
       e.preventDefault();
       var slug = a.getAttribute('data-slug');
-      if (location.hash === '#' + slug) {
+      if (parseHash().slug === slug) {
         setDrawer(false, false); /* same deck re-picked: no hashchange fires */
         if (frame) frame.focus();
       } else {
